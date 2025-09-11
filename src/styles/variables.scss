@@ -1,0 +1,92 @@
+@use 'utopia-core-scss' as utopia;
+
+$body_font: "PP Right Grotesk Text", sans-serif;
+$heading_font: "PP Right Grotesk", sans-serif;
+$mono_font: "PP Right Grotesk Mono", monospace;
+
+// $beige-pale: #F7F7F0;
+$beige: #F5F0E9;
+// $jaune: hsla(38, 100%, 65%, 1);
+// $jaune-pale: hsla(38, 100%, 82%, 1);
+$brun-fonce: #675751;
+$brun: #CAB893;
+
+// $corail: hsla(17, 73%, 70%, 1);
+// $corail-pale: hsla(17, 74%, 85%, 1);
+
+$gris-fonce: #808080;
+$gris: #C7C7BD;
+$gris-pale: #E9E9E5;
+
+// $bleu-pale: hsla(226, 27%, 82%, 1);
+$bleu: #062844;
+// $bleu-fonce: #1B3244;
+
+$vert: #043E43;
+// $vert-pale: hsla(72, 19%, 68%, 1);
+
+// $mauve-fonce: #4A355C;
+// $mauve: #CDB4E2;
+// $mauve-pale: #F5EAFF;
+
+// $vert-fonce: #1C4526;
+// $vert: #99E1A8;
+// $vert-pale: #E8FEED;
+
+// $sarcelle: #1D4742;
+// $aqua: #95E0D1;
+// $aqua-pale: #DBFBF4;
+
+$rouge: #D10502;
+// $bourgogne: #8A0132;
+// $rose: #FFB5CF;
+// $rose-pale: #FFE7EE;
+
+$noir: #1f2319;
+$blanc: #FFF;
+$muted: rgba($blanc, 0.5);
+
+$grey: $gris-pale;
+$accent: $vert;
+$accent-light: $brun;
+$accent-dark: $bleu;
+
+$base: 16px;
+  
+/* @link https://utopia.fyi/type/calculator?c=500,18,1.2,1500,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+
+:root {
+  @include utopia.generateTypeScale((
+    "minWidth": 500,
+    "maxWidth": 1800,
+    "minFontSize": 18,
+    "maxFontSize": 20,
+    "minTypeScale": 1.2,
+    "maxTypeScale": 1.25,
+    "positiveSteps": 8,
+    "negativeSteps": 3,
+    "prefix": "step-",
+    "relativeTo": "viewport-width"
+  ));
+}
+
+$s-3: var(--step--3);
+$s-2: var(--step--2);
+$s-1: var(--step--1);
+$s0: var(--step-0);
+$s1: var(--step-1);
+$s2: var(--step-2);
+$s3: var(--step-3);
+$s4: var(--step-4);
+$s5: var(--step-5);
+$s6: var(--step-6);
+$s7: var(--step-7);
+$s8: var(--step-8);
+$radius: $s-3;
+$max: 1440px;
+
+$tablet_landscape: 1380px;
+$tablet_portrait: 1024px;
+$mobile: 888px;
+
+$number_of_columns: 12;

@@ -25,6 +25,12 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
     `,
   });
 
+  setHeaders({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  });
+
   return json({
     variants: variants.data?.productVariants?.edges
   });

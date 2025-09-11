@@ -30,7 +30,6 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
-		"@shopify/shopify-api": "^11.14.1",
 		"luxon": "^3.7.2"
 	}
 }

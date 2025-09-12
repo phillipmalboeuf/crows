@@ -26,12 +26,13 @@
           // Find the variant for this line item
           const variant = data.variants[lineItem.variant?.product.id]
           if (variant && variant.projects) {
+            const both = lineItem.variant.title.includes('Both')
             // Add all project IDs from this variant
             return variant.projects.map(projectId => {
               let cost = 0
               const materials = data.projects[projectId]?.materials.reduce((acc, material) => {
                 const option = (lineItem.variant?.title && data.materials[material.material.key]?.options.find(option => lineItem.variant?.title.toLowerCase().includes(option.name))) || data.materials[material.material.key]?.options[0]
-                const amount = material.amount * lineItem.quantity
+                const amount = material.amount * lineItem.quantity * (both ? 2 : 1)
                 acc[material.material.key] = {
                   ...material,
                   option,
@@ -43,6 +44,7 @@
                 return acc
               }, {} as Record<string, { amount: number; material: { key: string; }; option: { name: string; cost_per_unit: number } }>)
               return {
+                orderId: order.id,
                 order: order.name,
                 created: order.createdAt,
                 lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
@@ -55,6 +57,7 @@
             })
           }
           return {
+            orderId: order.id,
             order: order.name,
             created: order.createdAt,
             lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
@@ -114,17 +117,17 @@
   <tbody>
     {#each projects as project}
       <tr>
-        <td>{#if project.first}{project.order}{/if}</td>
+        <td>{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
         <td>{#if project.first}{relativeDate(project.created)}{/if}</td>
         <td>{project.lineItem}</td>
         <td>{project.quantity}</td>
         <td>{project.project}</td>
         {#each data.materialsList as material}
-          <td>{#if project.materials && project.materials[material.id]?.amount}
+          <td class="mono">{#if project.materials && project.materials[material.id]?.amount}
             {project.materials[material.id]?.amount}<br>{project.materials[material.id]?.option?.name === 'default' ? '' : project.materials[material.id]?.option?.name}
             {/if}</td>
         {/each}
-        <td>{money(project.cost)}</td>
+        <td class="mono">{money(project.cost)}</td>
       </tr>
     {/each}
     <!-- {#each data.orders as order}
@@ -152,11 +155,11 @@
       <td></td>
       <td></td>
       {#each data.materialsList as material}
-        <td>{#each Object.entries(totals.materials[material.id].totalAmounts) as [option, amount]}
+        <td class="mono">{#each Object.entries(totals.materials[material.id].totalAmounts) as [option, amount]}
           {amount} {option === 'default' ? '' : option}<br>
         {/each}</td>
       {/each}
-      <td>{money(totals.cost)}</td>
+      <td class="mono">{money(totals.cost)}</td>
     </tr>
   </tfoot>
 </table>
@@ -166,28 +169,41 @@
 <style lang="scss">
   table {
     // table-layout: fixed;
-    border-collapse: collapse;
+    // border-collapse: collapse;
 
     td, th {
       border: 1px solid $grey;
       min-width: 200px;
-      // box-shadow: 1px 1px 0 $noir;
+      // box-shadow: 0px 0px 20px $grey inset;
+    }
+
+    th {
+      vertical-align: bottom;
+    }
+
+    tbody {
+      tr {
+        &:hover {
+          background-color: rgba($gris-pale, 0.5);
+        }
+      }
     }
     
-    thead {
+    thead,
+    tfoot {
       position: sticky;
       top: 0;
-      background-color: $blanc;
       z-index: 2;
-      box-shadow: 0 1px 0 $grey;
+
+      td, th {
+        background-color: $blanc;
+        // border: 1px solid $grey;
+      }
     }
 
     tfoot {
-      position: sticky;
+      top: auto;
       bottom: 0;
-      background-color: $blanc;
-      z-index: 2;
-      box-shadow: 0 -1px 0 $grey;
     }
   }
 </style>

@@ -4,6 +4,7 @@ import { readItems } from '@directus/sdk'
 
 export const getVariants = async () => {
   const variants = await directus(DIRECTUS_ADMIN_KEY).request(readItems('variants', {
+    limit: 1000,
     //@ts-expect-error
     fields: ['*', 'projects.projects_id']
   }))
@@ -14,12 +15,15 @@ export const getVariants = async () => {
 }
 
 export const getProjects = async () => {
-  const projects = await directus(DIRECTUS_ADMIN_KEY).request(readItems('projects'))
+  const projects = await directus(DIRECTUS_ADMIN_KEY).request(readItems('projects', {
+    limit: 1000,
+  }))
   return projects
 }
 
 export const getMaterials = async () => {
   const materials = await directus(DIRECTUS_ADMIN_KEY).request(readItems('materials', {
+    limit: 1000,
     sort: ['sort']
   }))
   return materials

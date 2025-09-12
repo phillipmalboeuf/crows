@@ -48,6 +48,10 @@ export const frequencyLabel = (value: number) => {
   return ['À chaque semaine', 'Au deux semaines'][value - 1]
 }
 
+export const roundToDecimals = (value: number, decimals: number = 2): number => {
+  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+}
+
 // export const adresse = (address: Square.Address) => {
 //   return [address.addressLine1, address.locality, address.postalCode].filter(a => !!a).join(', ')
 // }

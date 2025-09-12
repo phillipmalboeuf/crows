@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type Material, type Project } from '$lib/clients/schema'
-  import { money, relativeDate } from '$lib/formatters'
+  import { money, relativeDate, roundToDecimals } from '$lib/formatters'
   import type { LineItem } from '$lib/services/orders'
 
   let { data } = $props()
@@ -32,15 +32,15 @@
               let cost = 0
               const materials = data.projects[projectId]?.materials.reduce((acc, material) => {
                 const option = (lineItem.variant?.title && data.materials[material.material.key]?.options.find(option => lineItem.variant?.title.toLowerCase().includes(option.name))) || data.materials[material.material.key]?.options[0]
-                const amount = material.amount * lineItem.quantity * (both ? 2 : 1)
+                const amount = roundToDecimals(material.amount * lineItem.quantity * (both ? 2 : 1), 3)
                 acc[material.material.key] = {
                   ...material,
                   option,
                   amount
                 }
-                cost += amount * option.cost_per_unit
-                totals.cost += amount * option.cost_per_unit
-                totals.materials[material.material.key].totalAmounts[option.name] ? totals.materials[material.material.key].totalAmounts[option.name] += amount : totals.materials[material.material.key].totalAmounts[option.name] = amount
+                cost += roundToDecimals(amount * option.cost_per_unit, 2)
+                totals.cost += roundToDecimals(amount * option.cost_per_unit, 2)
+                totals.materials[material.material.key].totalAmounts[option.name] ? totals.materials[material.material.key].totalAmounts[option.name] = roundToDecimals(totals.materials[material.material.key].totalAmounts[option.name] + amount, 3) : totals.materials[material.material.key].totalAmounts[option.name] = amount
                 return acc
               }, {} as Record<string, { amount: number; material: { key: string; }; option: { name: string; cost_per_unit: number } }>)
               return {

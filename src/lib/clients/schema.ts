@@ -1,12 +1,40 @@
 import type { DirectusUser } from "@directus/sdk";
 
 export interface Schema {
+  goblins: Goblin[];
   materials: Material[];
   projects: Project[];
   test: Test[];
   variants: Variant[];
   variants_materials: VariantMaterial[];
   variants_projects: VariantProject[];
+}
+
+export interface Goblin {
+  id: string;
+  sort: number | null;
+  user_created: string | DirectusUser<Schema> | null;
+  date_created: string | null;
+  user_updated: string | DirectusUser<Schema> | null;
+  date_updated: string | null;
+  name: string | null;
+  Snaps: number | null;
+  Staples: number | null;
+  Cutting_Soft_Leather: number | null;
+  Dryad_Bark_Carving: number | null;
+  Belt_Roller: number | null;
+  Cutting_Veg_Tan: number | null;
+  Saddle_Stitch: number | null;
+  X_Stitch: number | null;
+  Machine_Sewing: number | null;
+  Complex_Assembly: number | null;
+  Hand_Stamping: number | null;
+  Press_Stamping: number | null;
+  Tooling_Lines: number | null;
+  Stain_Shading: number | null;
+  Tooling_Lines_with_Bevels: number | null;
+  Sheridanstyle_Tooling: number | null;
+  available_hours: number | null;
 }
 
 export interface Material {

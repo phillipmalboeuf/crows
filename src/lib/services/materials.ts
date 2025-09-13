@@ -28,3 +28,11 @@ export const getMaterials = async () => {
   }))
   return materials
 }
+
+export const getGoblins = async () => {
+  const materials = await directus(DIRECTUS_ADMIN_KEY).request(readItems('goblins', {
+    limit: 1000,
+    sort: ['sort']
+  }))
+  return materials
+}

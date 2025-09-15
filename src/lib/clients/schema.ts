@@ -3,6 +3,7 @@ import type { DirectusUser } from "@directus/sdk";
 export interface Schema {
   goblins: Goblin[];
   materials: Material[];
+  orders: Order[];
   projects: Project[];
   test: Test[];
   variants: Variant[];
@@ -50,6 +51,15 @@ export interface Material {
   sort: number | null;
 }
 
+export interface Order {
+  order: string;
+  user_created: string | DirectusUser<Schema> | null;
+  date_created: string | null;
+  user_updated: string | DirectusUser<Schema> | null;
+  date_updated: string | null;
+  goblin: { key: string } | null;
+}
+
 export interface Project {
   id: string;
   user_created: string | DirectusUser<Schema> | null;
@@ -58,7 +68,7 @@ export interface Project {
   date_updated: string | null;
   name: string | null;
   hours: number | null;
-  materials: Array<{ amount: number; material: { key: string; } }> | null;
+  materials: Array<{ amount: number; material: { key: string} }> | null;
   skills: Array<
     | "Snaps"
     | "Staples"

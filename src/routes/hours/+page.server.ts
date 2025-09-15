@@ -1,7 +1,9 @@
 import { shopify } from '$lib/clients/shopify';
+import { directus } from '$lib/clients/directus'
 import { getOrders } from '$lib/services/orders';
-import { getGoblins, getMaterials, getProjects, getVariants } from '$lib/services/materials';
-import type { Material, Project, Variant } from '$lib/clients/schema';
+import { getAssignedOrders, getGoblins, getMaterials, getProjects, getVariants } from '$lib/services/materials';
+import type { Material, Project, Variant, Order } from '$lib/clients/schema';
+
 
 
 export const load = async ({ request }) => {
@@ -11,6 +13,9 @@ export const load = async ({ request }) => {
     getProjects(),
     getGoblins()
   ])
+
+  const assignments = await getAssignedOrders(orders.map(order => order.name))
+  console.log(assignments)
   
   return {
     orders,
@@ -24,6 +29,10 @@ export const load = async ({ request }) => {
       ...acc,
       [project.id]: project
     }), {} as Record<string, Project>),
-    goblins
+    goblins,
+    assignments: assignments.reduce((acc, assignment) => ({
+      ...acc,
+      [assignment.order]: assignment
+    }), {} as Record<string, Order>)
   }
 }

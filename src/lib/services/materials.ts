@@ -36,3 +36,15 @@ export const getGoblins = async () => {
   }))
   return materials
 }
+
+export const getAssignedOrders = async (orders: string[]) => {
+  const assignedOrders = await directus(DIRECTUS_ADMIN_KEY).request(readItems('orders', {
+    limit: 1000,
+    filter: {
+      order: {
+        _in: orders
+      }
+    }
+  }))
+  return assignedOrders
+}

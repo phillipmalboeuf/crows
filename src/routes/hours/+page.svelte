@@ -128,7 +128,7 @@
       <tr>
         <td>{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
         <td>{#if project.first}{relativeDate(project.created)}{/if}</td>
-        <td>{project.tags ? project.tags.join(', ') : ''}</td>
+        <td>{#if project.first}{project.tags ? project.tags.join(', ') : ''}{/if}</td>
         <td>
           {#if project.first}
           <select oninput={(e) => updateOrder(project.order, e.currentTarget.value)}>

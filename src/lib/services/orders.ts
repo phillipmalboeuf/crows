@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 export type Order = {
   id: string
   name: string
+  tags: string[]
   email: string
   totalPrice: number
   displayFulfillmentStatus: string
@@ -42,6 +43,7 @@ export const getOrders = async () => {
               id
               name
               email
+              tags
               customer {
                 id
               }

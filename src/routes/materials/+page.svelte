@@ -46,6 +46,7 @@
               return {
                 orderId: order.id,
                 order: order.name,
+                tags: order.tags,
                 created: order.createdAt,
                 lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
                 quantity: lineItem.quantity,
@@ -59,6 +60,7 @@
           return {
             orderId: order.id,
             order: order.name,
+            tags: order.tags,
             created: order.createdAt,
             lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
             quantity: lineItem.quantity,
@@ -105,6 +107,7 @@
       <th>Order</th>
       <!-- <th>Customer</th> -->
       <th>Created</th>
+      <th>Tags</th>
       <th>Item</th>
       <th>Quantity</th>
       <th>Project</th>
@@ -119,6 +122,7 @@
       <tr>
         <td>{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
         <td>{#if project.first}{relativeDate(project.created)}{/if}</td>
+        <td>{#if project.first}{project.tags ? project.tags.join(', ') : ''}{/if}</td>
         <td>{project.lineItem}</td>
         <td>{project.quantity}</td>
         <td>{project.project}</td>

@@ -174,7 +174,7 @@
           {#each skillsKeys.map(skill => goblin[skill]) as skill, index}
           <!-- {skillsKeys[index].replaceAll('_', ' ')} -->
           
-          <div title={skillsKeys[index].replaceAll('_', ' ')} class="skill--{skill}" class:active={assignedskills[goblin.id][skillsKeys[index].replaceAll('_', ' ')]} style:--top={`${100 * (skill / 3)}%`}></div>
+          <div title={skillsKeys[index].replace('style', '-style').replaceAll('_', ' ')} class="skill--{skill}" class:active={assignedskills[goblin.id][skillsKeys[index].replace('style', '-style').replaceAll('_', ' ')]} style:--top={`${100 * (skill / 3)}%`}></div>
           {/each}
         </td>
       </tr>

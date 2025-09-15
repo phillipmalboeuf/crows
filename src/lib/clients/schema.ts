@@ -47,7 +47,7 @@ export interface Material {
   unit: "kg" | "sqft" | "pack" | "yds" | "ft" | "unit" | null;
   name: string | null;
   supplier: string | null;
-  options: Array<{ name: string; sku: string; cost_per_unit: number }> | null;
+  options: Array<{ name: string; sku: string; cost_per_unit: number, amount_per_order: number }> | null;
   sort: number | null;
 }
 

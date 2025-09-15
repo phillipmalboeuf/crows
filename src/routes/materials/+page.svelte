@@ -128,7 +128,7 @@
         <td>{project.project}</td>
         {#each data.materialsList as material}
           <td class="mono">{#if project.materials && project.materials[material.id]?.amount}
-            {project.materials[material.id]?.amount}<br>{project.materials[material.id]?.option?.name === 'default' ? '' : project.materials[material.id]?.option?.name}
+            {project.materials[material.id]?.amount}{#if data.materials[material.id].unit !== 'unit'}<small>{data.materials[material.id].unit}</small>{/if}<br>{project.materials[material.id]?.option?.name === 'default' ? '' : project.materials[material.id]?.option?.name}
             {/if}</td>
         {/each}
         <td class="mono">{money(project.cost)}</td>
@@ -158,9 +158,13 @@
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
       {#each data.materialsList as material}
-        <td class="mono">{#each Object.entries(totals.materials[material.id].totalAmounts) as [option, amount]}
-          {amount} {option === 'default' ? '' : option}<br>
+        <td class="mono">{#each Object.entries(totals.materials[material.id].totalAmounts) as [entriedOption, amount]}
+          {amount}{#if data.materials[material.id].unit !== 'unit'}<small>{data.materials[material.id].unit}</small>{/if} {entriedOption === 'default' ? '' : entriedOption}<br>
+          {#if material.options.find(option => option.name === entriedOption)?.amount_per_order}
+            = {roundToDecimals(amount / material.options.find(option => option.name === entriedOption).amount_per_order, 3)} orders<br>
+          {/if}
         {/each}</td>
       {/each}
       <td class="mono">{money(totals.cost)}</td>

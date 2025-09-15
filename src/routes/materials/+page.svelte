@@ -49,6 +49,7 @@
                 tags: order.tags,
                 created: order.createdAt,
                 lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
+                customAttributes: lineItem.customAttributes,
                 quantity: lineItem.quantity,
                 project: data.projects[projectId]?.name,
                 materials,
@@ -63,6 +64,7 @@
             tags: order.tags,
             created: order.createdAt,
             lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
+            customAttributes: lineItem.customAttributes,
             quantity: lineItem.quantity,
             project: null as string,
             materials: null as Record<string, { amount: number; material: { key: string; }; option: { name: string; cost_per_unit: number } }>,
@@ -123,7 +125,7 @@
         <td>{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
         <td>{#if project.first}{relativeDate(project.created)}{/if}</td>
         <td>{#if project.first}{project.tags ? project.tags.join(', ') : ''}{/if}</td>
-        <td>{project.lineItem}</td>
+        <td>{project.lineItem}{#if project.customAttributes.length > 0}<br><small>{project.customAttributes.map(attribute => `${attribute.key}: ${attribute.value}`).join('\n ')}</small>{/if}</td>
         <td>{project.quantity}</td>
         <td>{project.project}</td>
         {#each data.materialsList as material}

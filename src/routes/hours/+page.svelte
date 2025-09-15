@@ -68,6 +68,7 @@
                 tags: order.tags,
                 created: order.createdAt,
                 lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
+                customAttributes: lineItem.customAttributes,
                 quantity: lineItem.quantity,
                 goblin: data.assignments[order.name]?.goblin?.key,
                 project: data.projects[projectId]?.name,
@@ -82,7 +83,8 @@
             order: order.name,
             tags: order.tags,
             created: order.createdAt,
-            lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
+            lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),  
+            customAttributes: lineItem.customAttributes,
             quantity: lineItem.quantity,
             goblin: data.assignments[order.name]?.goblin?.key,
             project: null as string,
@@ -139,7 +141,7 @@
           </select>
           {/if}
         </td>
-        <td>{project.lineItem}</td>
+        <td>{project.lineItem}{#if project.customAttributes.length > 0}<br><small>{project.customAttributes.map(attribute => `${attribute.key}: ${attribute.value}`).join('\n ')}</small>{/if}</td>
         <td>{project.quantity}</td>
         <td>{project.project}</td>
         <td>{project.hours ? project.hours : ''}</td>
@@ -150,6 +152,7 @@
   <tfoot>
     <tr>
       <td>Total</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>

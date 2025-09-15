@@ -19,6 +19,10 @@ export type LineItem = {
   id: string
   title: string
   quantity: number
+  customAttributes: Array<{
+    key: string
+    value: string
+  }>
   variant: {
     id: string
     title: string
@@ -55,6 +59,10 @@ export const getOrders = async () => {
                   node {
                     title
                     quantity
+                    customAttributes {
+                      key
+                      value
+                    }
                     variant {
                       id
                       title

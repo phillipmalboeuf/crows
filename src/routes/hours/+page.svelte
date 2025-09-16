@@ -181,7 +181,7 @@
       <td></td>
       <td class="td--small"></td>
       <td></td>
-      <td class="td--progress" style:--progress={totals.readyHours / totals.hours}><span>{roundToDecimals(totals.readyHours, 2)} / {roundToDecimals(totals.hours, 2)}</span></td>
+      <td class="td--progress" style:--progress={totals.readyHours / totals.hours}><span>{roundToDecimals(totals.readyHours, 2)} / {roundToDecimals(totals.assignedHours, 2)} / {roundToDecimals(totals.hours, 2)}</span></td>
       <td></td>
     </tr>
   </tfoot>

@@ -30,6 +30,7 @@
     let totals = {
       hours: 0,
       assignedHours: 0,
+      readyHours: 0,
       totalReady: 0,
     }
 
@@ -59,6 +60,7 @@
               if (data.assignments[order.name]?.goblin?.key) {
                 assignedHours[data.assignments[order.name]?.goblin?.key] += hours;
                 totals.assignedHours += hours;
+                totals.readyHours += data.assignments[order.name]?.ready ? hours : 0;
                 if (data.projects[projectId]?.skills) {
                   data.projects[projectId]?.skills.forEach(skill => {
                     assignedskills[data.assignments[order.name]?.goblin?.key][skill] = true
@@ -179,7 +181,7 @@
       <td></td>
       <td class="td--small"></td>
       <td></td>
-      <td class="td--progress" style:--progress={totals.assignedHours / totals.hours}><span>{roundToDecimals(totals.assignedHours, 2)} / {roundToDecimals(totals.hours, 2)}</span></td>
+      <td class="td--progress" style:--progress={totals.readyHours / totals.hours}><span>{roundToDecimals(totals.readyHours, 2)} / {roundToDecimals(totals.hours, 2)}</span></td>
       <td></td>
     </tr>
   </tfoot>

@@ -47,7 +47,12 @@ export interface Material {
   unit: "kg" | "sqft" | "pack" | "yds" | "ft" | "unit" | null;
   name: string | null;
   supplier: string | null;
-  options: Array<{ name: string; sku: string; cost_per_unit: number, amount_per_order: number }> | null;
+  options: Array<{
+    name: string;
+    sku: string;
+    cost_per_unit: number;
+    amount_per_order: number;
+  }> | null;
   sort: number | null;
 }
 
@@ -58,6 +63,7 @@ export interface Order {
   user_updated: string | DirectusUser<Schema> | null;
   date_updated: string | null;
   goblin: { key: string } | null;
+  ready: boolean | null;
 }
 
 export interface Project {
@@ -68,7 +74,7 @@ export interface Project {
   date_updated: string | null;
   name: string | null;
   hours: number | null;
-  materials: Array<{ amount: number; material: { key: string} }> | null;
+  materials: Array<{ amount: number; material: { key: string } }> | null;
   skills: Array<
     | "Snaps"
     | "Staples"

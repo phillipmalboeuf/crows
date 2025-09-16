@@ -29,6 +29,8 @@
 
     let totals = {
       hours: 0,
+      assignedHours: 0,
+      totalReady: 0,
     }
 
     let assignedHours = data.goblins.reduce((acc, goblin) => {
@@ -44,6 +46,7 @@
     // Iterate through all orders and their line items
     return {
       projects: data.orders.flatMap(order => {
+        totals.totalReady += data.assignments[order.name]?.ready ? 1 : 0;
         return order.lineItems.flatMap((lineItem, index) => {
           // Find the variant for this line item
           const variant = data.variants[lineItem.variant?.product.id]
@@ -55,6 +58,7 @@
               totals.hours += hours;
               if (data.assignments[order.name]?.goblin?.key) {
                 assignedHours[data.assignments[order.name]?.goblin?.key] += hours;
+                totals.assignedHours += hours;
                 if (data.projects[projectId]?.skills) {
                   data.projects[projectId]?.skills.forEach(skill => {
                     assignedskills[data.assignments[order.name]?.goblin?.key][skill] = true
@@ -67,6 +71,7 @@
                 order: order.name,
                 tags: order.tags,
                 created: order.createdAt,
+                ready: data.assignments[order.name]?.ready,
                 lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),
                 customAttributes: lineItem.customAttributes,
                 quantity: lineItem.quantity,
@@ -83,6 +88,7 @@
             order: order.name,
             tags: order.tags,
             created: order.createdAt,
+            ready: data.assignments[order.name]?.ready,
             lineItem: lineItem.title + (lineItem.variant?.title ? ' – ' + lineItem.variant?.title : ''),  
             customAttributes: lineItem.customAttributes,
             quantity: lineItem.quantity,
@@ -107,19 +113,28 @@
     })
     await invalidateAll()
   }
+
+  async function updateOrderReady(name: string, ready: boolean) {
+    await fetch(`/api/orders`, {
+      method: 'PUT',
+      body: JSON.stringify({ name, ready })
+    })
+    await invalidateAll()
+  }
 </script>
 
 <section>
 <table>
   <thead>
     <tr>
-      <th>Order</th>
+      <th class="td--small">Order</th>
       <!-- <th>Customer</th> -->
-      <th>Created</th>
+      <th class="td--small">Created</th>
       <th>Tags</th>
       <th>Goblin</th>
+      <th class="td--small">Ready</th>
       <th>Item</th>
-      <th>Quantity</th>
+      <th class="td--small">Quantity</th>
       <th>Project</th>
       <th>Hours</th>
       <th>Skills</th>
@@ -128,8 +143,8 @@
   <tbody>
     {#each projects as project}
       <tr>
-        <td>{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
-        <td>{#if project.first}{relativeDate(project.created)}{/if}</td>
+        <td class="td--small">{#if project.first}<a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{project.orderId.split('/Order/')[1]}" target="_blank">{project.order}</a>{/if}</td>
+        <td class="td--small">{#if project.first}{relativeDate(project.created)}{/if}</td>
         <td>{#if project.first}{project.tags ? project.tags.join(', ') : ''}{/if}</td>
         <td>
           {#if project.first}
@@ -141,8 +156,13 @@
           </select>
           {/if}
         </td>
+        <td class="td--small td--checkbox">
+          {#if project.first}
+          <input type="checkbox" checked={project.ready} oninput={(e) => updateOrderReady(project.order, e.currentTarget.checked)}>
+          {/if}
+        </td>
         <td>{project.lineItem}{#if project.customAttributes.length > 0}<br><small>{project.customAttributes.map(attribute => `${attribute.key}: ${attribute.value}`).join('\n ')}</small>{/if}</td>
-        <td>{project.quantity}</td>
+        <td class="td--small">{project.quantity}</td>
         <td>{project.project}</td>
         <td>{project.hours ? project.hours : ''}</td>
         <td>{project.skills ? project.skills.join(', ') : ''}</td>
@@ -151,14 +171,15 @@
   </tbody>
   <tfoot>
     <tr>
-      <td>Total</td>
+      <td class="td--small">Total</td>
+      <td class="td--small"></td>
       <td></td>
       <td></td>
+      <td class="td--small td--progress" style:--progress={totals.totalReady / data.orders.length}><span>{totals.totalReady} / {data.orders.length}</span></td>
       <td></td>
+      <td class="td--small"></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>{roundToDecimals(totals.hours, 2)}</td>
+      <td class="td--progress" style:--progress={totals.assignedHours / totals.hours}><span>{roundToDecimals(totals.assignedHours, 2)} / {roundToDecimals(totals.hours, 2)}</span></td>
       <td></td>
     </tr>
   </tfoot>
@@ -261,6 +282,39 @@
 
     th {
       vertical-align: bottom;
+    }
+
+    td,
+    th {
+      &.td--small {
+        min-width: 100px;
+      }
+
+      &.td--checkbox {
+        padding: $s0;
+      }
+    }
+
+    td.td--progress {
+      position: relative;
+
+      span {
+        position: relative;
+        z-index: 1;
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        display: block;
+        width: calc(var(--progress) * 100%);
+        height: 100%;
+        background: linear-gradient(to right, rgba($rouge, 0.5), rgba($jaune, 0.5), rgba($bleu, 0.5), rgba($vert, 0.5));
+        background-size: 100px 100%;
+      }
     }
 
     tbody {

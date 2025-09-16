@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 }
 
 export const PUT: RequestHandler = async ({ request, setHeaders }) => {
-  const { name, goblin } = await request.json();
+  const { name, goblin, ready } = await request.json();
 
   try {
     // First, try to find existing order
@@ -51,14 +51,15 @@ export const PUT: RequestHandler = async ({ request, setHeaders }) => {
     if (existingOrders.length > 0) {
       // Update existing order
       return json(await directus(DIRECTUS_ADMIN_KEY).request(
-        updateItemsBatch('orders', [{ order: existingOrders[0].order, goblin: { key: goblin } }])
+        updateItemsBatch('orders', [{ order: existingOrders[0].order, ...goblin ? { goblin: { key: goblin } } : {}, ready }])
       ));
     } else {
       // Create new order
       return json(await directus(DIRECTUS_ADMIN_KEY).request(
         createItem('orders', {
           order: name,
-          goblin: { key: goblin }
+          ...goblin ? { goblin: { key: goblin } } : {},
+          ready
         })
       ));
     }

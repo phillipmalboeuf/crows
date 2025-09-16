@@ -197,7 +197,7 @@
     {#each data.goblins as goblin}
       <tr>
         <td>{goblin.name}</td>
-        <td class:alert={assignedHours[goblin.id] > goblin.available_hours}>{assignedHours[goblin.id]} / {goblin.available_hours}</td>
+        <td class:alert={assignedHours[goblin.id] > goblin.available_hours}>{roundToDecimals(assignedHours[goblin.id], 2)} / {roundToDecimals(goblin.available_hours, 2)}</td>
         <td class="skills">
           {#each skillsKeys.map(skill => goblin[skill]) as skill, index}
           <!-- {skillsKeys[index].replaceAll('_', ' ')} -->

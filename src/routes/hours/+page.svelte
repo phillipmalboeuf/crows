@@ -313,7 +313,13 @@
         width: calc(var(--progress) * 100%);
         height: 100%;
         background: linear-gradient(to right, rgba($rouge, 0.5), rgba($jaune, 0.5), rgba($bleu, 0.5), rgba($vert, 0.5));
-        background-size: 100px 100%;
+        background-size: 200px 100%;
+      }
+
+      &.td--small {
+        &:before {
+          background-size: 100px 100%;
+        }
       }
     }
 

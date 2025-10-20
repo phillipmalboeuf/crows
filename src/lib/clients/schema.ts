@@ -19,6 +19,7 @@ export interface Goblin {
   user_updated: string | DirectusUser<Schema> | null;
   date_updated: string | null;
   name: string | null;
+  contractor: boolean | null;
   Snaps: number | null;
   Staples: number | null;
   Cutting_Soft_Leather: number | null;
@@ -64,6 +65,7 @@ export interface Order {
   date_updated: string | null;
   goblin: { key: string } | null;
   ready: boolean | null;
+  paid: boolean | null;
 }
 
 export interface Project {

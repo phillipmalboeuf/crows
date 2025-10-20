@@ -7,6 +7,7 @@ export type Order = {
   tags: string[]
   email: string
   totalPrice: number
+  subtotalPrice: number
   displayFulfillmentStatus: string
   createdAt: string
   lineItems: LineItem[]
@@ -35,8 +36,8 @@ export type LineItem = {
 }
 export const getOrders = async () => {
   const now = DateTime.now()
-  const daysAgo = now.minus({ days: 90 })
-  const daysAgoString = daysAgo.toISODate()
+  // const daysAgo = now.minus({ days: 90 })
+  // const daysAgoString = daysAgo.toISODate()
 
   const orders = await shopify.query({
     data: `
@@ -87,5 +88,46 @@ export const getOrders = async () => {
     lineItems: edge.node.lineItems.edges.map((lineItem) => ({
       ...lineItem.node
     }))
+  })) as Order[]
+}
+
+export const getOrdersByNumbers = async (numbers: string[]) => {
+  const now = DateTime.now()
+  // const daysAgo = now.minus({ days: 90 })
+  // const daysAgoString = daysAgo.toISODate()
+
+  const orders = await shopify.query({
+    data: `
+      query {
+        orders(first: 150, sortKey: CREATED_AT, query: "name:${numbers.join(' OR name:')}") {
+          edges {
+            node {
+              id
+              name
+              email
+              tags
+              customer {
+                id
+              }
+              subtotalPriceSet {
+                shopMoney {
+                  amount
+                }
+              }
+              totalPrice
+              displayFulfillmentStatus
+              createdAt
+            }
+          }
+        }
+      }
+    `
+  })
+
+  // console.log(orders.data?.orders?.edges.length, orders.data?.orders?.edges.map((edge) => edge.node.subtotalPriceSet))
+
+  return orders.data?.orders?.edges.map((edge) => ({
+    ...edge.node,
+    subtotalPrice: parseFloat(edge.node.subtotalPriceSet.shopMoney.amount),
   })) as Order[]
 }

@@ -48,3 +48,15 @@ export const getAssignedOrders = async (orders: string[]) => {
   }))
   return assignedOrders
 }
+
+export const getUnpaidOrders = async () => {
+  const unpaidOrders = await directus(DIRECTUS_ADMIN_KEY).request(readItems('orders', {
+    limit: 300,
+    filter: {
+      paid: {
+        _neq: true
+      }
+    }
+  }))
+  return unpaidOrders
+}

@@ -10,6 +10,7 @@
   <nav class="flex flex--bottom">
     <a href="/materials" aria-current={page.url.pathname === '/materials' ? 'page' : undefined}>Materials</a>
     <a href="/hours" aria-current={page.url.pathname === '/hours' ? 'page' : undefined}>Hours</a>
+    <a href="/goblins" aria-current={page.url.pathname.startsWith('/goblins') ? 'page' : undefined}>Goblins</a>
   </nav>
 </header>
 

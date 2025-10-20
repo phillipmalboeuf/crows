@@ -4,7 +4,7 @@ import { readItems } from '@directus/sdk'
 
 export const getVariants = async () => {
   const variants = await directus(DIRECTUS_ADMIN_KEY).request(readItems('variants', {
-    limit: 1000,
+    limit: 300,
     //@ts-expect-error
     fields: ['*', 'projects.projects_id']
   }))
@@ -16,14 +16,14 @@ export const getVariants = async () => {
 
 export const getProjects = async () => {
   const projects = await directus(DIRECTUS_ADMIN_KEY).request(readItems('projects', {
-    limit: 1000,
+    limit: 300,
   }))
   return projects
 }
 
 export const getMaterials = async () => {
   const materials = await directus(DIRECTUS_ADMIN_KEY).request(readItems('materials', {
-    limit: 1000,
+    limit: 300,
     sort: ['sort']
   }))
   return materials
@@ -31,7 +31,7 @@ export const getMaterials = async () => {
 
 export const getGoblins = async () => {
   const materials = await directus(DIRECTUS_ADMIN_KEY).request(readItems('goblins', {
-    limit: 1000,
+    limit: 30,
     sort: ['sort']
   }))
   return materials
@@ -39,7 +39,7 @@ export const getGoblins = async () => {
 
 export const getAssignedOrders = async (orders: string[]) => {
   const assignedOrders = await directus(DIRECTUS_ADMIN_KEY).request(readItems('orders', {
-    limit: 1000,
+    limit: 300,
     filter: {
       order: {
         _in: orders

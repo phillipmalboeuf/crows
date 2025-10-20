@@ -5,6 +5,7 @@ import type { Material, Project, Variant, Order } from '$lib/clients/schema';
 
 
 export const load = async ({ request }) => {
+  try {
   const [orders, variants, projects, materials] = await Promise.all([
     getOrders(),
     getVariants(),
@@ -16,8 +17,8 @@ export const load = async ({ request }) => {
       ...acc,
       [assignment.order]: assignment
     }), {} as Record<string, Order>)
-  
-  return {
+
+    return {
     orders: orders.filter(order => !assignments[order.name]?.ready),
     variants: variants.reduce((acc, variant) => ({
       ...acc,
@@ -35,4 +36,9 @@ export const load = async ({ request }) => {
       [material.id]: material
     }), {} as Record<string, Material>),
   }
+  } catch (error) {
+    console.error(error)
+  }
+  
+  
 }

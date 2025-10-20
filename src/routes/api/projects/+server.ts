@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
   // console.log(Object.keys(productsData).length)
 
   const projects = await directus(DIRECTUS_ADMIN_KEY).request(readItems('projects', {
-    limit: 1000,
+    limit: 300,
     fields: ['id', 'name']
   }))
 

@@ -6,7 +6,7 @@ import type { Material, Project, Variant, Order } from '$lib/clients/schema';
 
 
 
-export const load = async ({ request }) => {
+export const load = async ({ request, params }) => {
   const [orders, variants, projects, goblins] = await Promise.all([
     getOrders(),
     getVariants(),
@@ -14,11 +14,15 @@ export const load = async ({ request }) => {
     getGoblins()
   ])
 
-  const assignments = await getAssignedOrders(orders.map(order => order.name))
+  const assignments = (await getAssignedOrders(orders.map(order => order.name))).   reduce((acc, assignment) => ({
+      ...acc,
+      [assignment.order]: assignment
+    }), {} as Record<string, Order>)
   // console.log(assignments)
   
   return {
-    orders,
+    id: params.id,
+    orders: orders.filter(order => assignments[order.name]?.goblin?.key === params.id),
     variants: variants.reduce((acc, variant) => ({
       ...acc,
       [variant.shopify_variant]: {
@@ -30,9 +34,6 @@ export const load = async ({ request }) => {
       [project.id]: project
     }), {} as Record<string, Project>),
     goblins,
-    assignments: assignments.reduce((acc, assignment) => ({
-      ...acc,
-      [assignment.order]: assignment
-    }), {} as Record<string, Order>)
+    assignments
   }
 }

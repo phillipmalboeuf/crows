@@ -30,9 +30,9 @@
         assignedSubtotals[order?.goblin?.key] += data.orders[order.order]?.subtotalPrice;
 
         return {
-          orderId: order.order,
+          orderId: data.orders[order.order]?.id,
           order: order.order,
-          // tags: order.tags,
+          tags:  data.orders[order.order]?.tags,
           // created: order.createdAt,
           ready: order.ready,
           paid: order.paid,
@@ -74,9 +74,10 @@
   <thead>
     <tr>
       <th class="td--small">Order</th>
+      <th class="td--small">Created</th>
+      <th>Tags</th>
       <!-- <th>Customer</th> -->
-      <!-- <th class="td--small">Created</th>
-      <th>Tags</th> -->
+      <!-- <th class="td--small">Created</th>-->
       <th>Goblin</th>
       <th class="td--small">Ready</th>
       <th class="td--small">Paid</th>
@@ -87,9 +88,9 @@
     {#each orders as order}
       <tr>
         <td class="td--small"><a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{order.orderId.split('/Order/')[1]}" target="_blank">{order.order}</a></td>
-        <!-- <td class="td--small">{relativeDate(order.created)}</td>
-        <td>{order.tags ? order.tags.join(', ') : ''}</td> -->
-        <td>{order.goblin}</td>
+        <td class="td--small">{relativeDate(data.orders[order.order]?.createdAt)}</td>
+        <td>{order.tags ? order.tags.join(', ') : ''}</td>
+        <td>{data.goblins.find(goblin => goblin.id === order.goblin)?.name}</td>
         <td class="td--small td--checkbox">
           <input type="checkbox" checked={order.ready} oninput={(e) => updateOrderReady(order.order, e.currentTarget.checked)}>
         </td>
@@ -103,8 +104,8 @@
   <tfoot>
     <tr>
       <td class="td--small">Total</td>
-      <!-- <td class="td--small"></td>
-      <td></td> -->
+      <td class="td--small"></td>
+      <td></td>
       <td></td>
       <td class="td--small td--progress" style:--progress={totals.totalReady / data.unpaidOrders.length}><span>{totals.totalReady} / {data.unpaidOrders.length}</span></td>
       <td class="td--small td--progress"></td>

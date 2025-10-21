@@ -125,7 +125,7 @@
     {#each data.goblins as goblin}
       <tr>
         <td>{goblin.name}</td>
-        <td class="mono">{money(assignedSubtotals[goblin.id] * 0.15)}</td>
+        <td class="mono">{money(assignedSubtotals[goblin.id] * 0.35)}</td>
       </tr>
     {/each}
   </tbody>

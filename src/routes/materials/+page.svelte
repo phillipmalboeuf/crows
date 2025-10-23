@@ -1,6 +1,7 @@
 <script lang="ts">
   import { type Material, type Project } from '$lib/clients/schema'
   import { money, relativeDate, roundToDecimals } from '$lib/formatters'
+  import { getLocale } from '$lib/paraglide/runtime';
   import type { LineItem } from '$lib/services/orders'
 
   let { data } = $props()
@@ -106,17 +107,17 @@
 <table>
   <thead>
     <tr>
-      <th>Order</th>
+      <th>{getLocale() === 'fr' ? 'Commande' : 'Order'}</th>
       <!-- <th>Customer</th> -->
-      <th>Created</th>
+      <th>{getLocale() === 'fr' ? 'Créée' : 'Created'}</th>
       <th>Tags</th>
       <th>Item</th>
-      <th>Quantity</th>
-      <th>Project</th>
+      <th>{getLocale() === 'fr' ? 'Quantité' : 'Quantity'}</th>
+      <th>{getLocale() === 'fr' ? 'Projet' : 'Project'}</th>
       {#each data.materialsList as material}
         <th>{material.name}</th>
       {/each}
-      <th>Cost</th>
+      <th>{getLocale() === 'fr' ? 'Coût' : 'Cost'}</th>
     </tr>
   </thead>
   <tbody>
@@ -165,7 +166,7 @@
         <td class="mono">{#each Object.entries(totals.materials[material.id].totalAmounts) as [entriedOption, amount]}
           {amount}{#if data.materials[material.id].unit !== 'unit'}<small>{data.materials[material.id].unit}</small>{/if} {entriedOption === 'default' ? '' : entriedOption}<br>
           {#if material.options.find(option => option.name === entriedOption)?.amount_per_order}
-            = {roundToDecimals(amount / material.options.find(option => option.name === entriedOption).amount_per_order, 3)} orders<br>
+            = {roundToDecimals(amount / material.options.find(option => option.name === entriedOption).amount_per_order, 3)} {getLocale() === 'fr' ? 'commandes' : 'orders'}<br>
           {/if}
         {/each}</td>
       {/each}

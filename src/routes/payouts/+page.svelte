@@ -3,6 +3,7 @@
   import { money, relativeDate, roundToDecimals } from '$lib/formatters'
   import type { LineItem } from '$lib/services/orders'
   import { invalidateAll } from '$app/navigation'
+  import { getLocale } from '$lib/paraglide/runtime.js';
 
   let { data } = $props()
 
@@ -73,15 +74,15 @@
 <table>
   <thead>
     <tr>
-      <th class="td--small">Order</th>
-      <th class="td--small">Created</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Commande' : 'Order'}</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Créee' : 'Created'}</th>
       <th>Tags</th>
       <!-- <th>Customer</th> -->
       <!-- <th class="td--small">Created</th>-->
       <th>Goblin</th>
-      <th class="td--small">Ready</th>
-      <th class="td--small">Paid</th>
-      <th>Subtotal</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Prête' : 'Ready'}</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Payée' : 'Paid'}</th>
+      <th>{getLocale() === 'fr' ? 'Sous-total' : 'Subtotal'}</th>
     </tr>
   </thead>
   <tbody>
@@ -118,7 +119,7 @@
   <thead>
     <tr>
       <th>Goblin</th>
-      <th>Total Payout</th>
+      <th>{getLocale() === 'fr' ? 'Paiement total' : 'Total Payout'}</th>
       <!-- <th>Skills</th> -->
     </tr>
   </thead>

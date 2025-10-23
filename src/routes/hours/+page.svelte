@@ -3,6 +3,7 @@
   import { money, relativeDate, roundToDecimals } from '$lib/formatters'
   import type { LineItem } from '$lib/services/orders'
   import { invalidateAll } from '$app/navigation'
+  import { getLocale } from '$lib/paraglide/runtime';
 
   let { data } = $props()
 
@@ -129,16 +130,16 @@
 <table>
   <thead>
     <tr>
-      <th class="td--small">Order</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Commande' : 'Order'}</th>
       <!-- <th>Customer</th> -->
-      <th class="td--small">Created</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Créée' : 'Created'}</th>
       <th>Tags</th>
       <th>Goblin</th>
-      <th class="td--small">Ready</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Prête' : 'Ready'}</th>
       <th>Item</th>
-      <th class="td--small">Quantity</th>
-      <th>Project</th>
-      <th>Hours</th>
+      <th class="td--small">{getLocale() === 'fr' ? 'Quantité' : 'Quantity'}</th>
+      <th>{getLocale() === 'fr' ? 'Projet' : 'Project'}</th>
+      <th>{getLocale() === 'fr' ? 'Heures' : 'Hours'}</th>
       <th>Skills</th>
     </tr>
   </thead>
@@ -191,7 +192,7 @@
   <thead>
     <tr>
       <th>Goblin</th>
-      <th>Hours</th>
+      <th>{getLocale() === 'fr' ? 'Heures' : 'Hours'}</th>
       <th>Skills</th>
     </tr>
   </thead>

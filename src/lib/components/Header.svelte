@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Logo from './Logo.svelte'
 	import { page } from '$app/state'
+  import { getLocale, setLocale } from '$lib/paraglide/runtime'
 </script>
 
 <header class="flex">
@@ -8,10 +9,14 @@
     <Logo />
   </a>
   <nav class="flex flex--bottom">
-    <a href="/materials" aria-current={page.url.pathname === '/materials' ? 'page' : undefined}>Materials</a>
-    <a href="/hours" aria-current={page.url.pathname === '/hours' ? 'page' : undefined}>Hours</a>
+    <a href="/materials" aria-current={page.url.pathname === '/materials' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Matériaux' : 'Materials'}</a>
+    <a href="/hours" aria-current={page.url.pathname === '/hours' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Heures' : 'Hours'}</a>
     <a href="/goblins" aria-current={page.url.pathname.startsWith('/goblins') ? 'page' : undefined}>Goblins</a>
-    <a href="/payouts" aria-current={page.url.pathname === '/payouts' ? 'page' : undefined}>Payouts</a>
+    <a href="/payouts" aria-current={page.url.pathname === '/payouts' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Paiements' : 'Payouts'}</a>
+  </nav>
+  <nav class="flex flex--tight_gapped flex--middle">
+    <button class:button--muted={getLocale() !== 'fr'} class:button--dark={getLocale() === 'fr'} onclick={() => setLocale('fr')}>Français</button>
+    <button class:button--muted={getLocale() !== 'en'} class:button--dark={getLocale() === 'en'} onclick={() => setLocale('en')}>English</button>
   </nav>
 </header>
 
@@ -50,6 +55,11 @@
           background: $gris-pale;
           border-bottom: 2px solid;
         }
+      }
+
+      & + nav {
+        margin-left: auto;
+        margin-right: $s0;
       }
     }
   }

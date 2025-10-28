@@ -8,6 +8,7 @@ export type Order = {
   email: string
   totalPrice: number
   subtotalPrice: number
+  totalDiscounts: number
   displayFulfillmentStatus: string
   createdAt: string
   lineItems: LineItem[]
@@ -114,6 +115,11 @@ export const getOrdersByNumbers = async (numbers: string[]) => {
                   amount
                 }
               }
+              totalDiscountsSet {
+                shopMoney {
+                  amount
+                }
+              }
               totalPrice
               displayFulfillmentStatus
               createdAt
@@ -124,10 +130,11 @@ export const getOrdersByNumbers = async (numbers: string[]) => {
     `
   })
 
-  // console.log(orders.data?.orders?.edges.length, orders.data?.orders?.edges.map((edge) => edge.node.subtotalPriceSet))
+  // console.log(orders.data?.orders?.edges.length, orders.data?.orders?.edges.map((edge) => edge.node.totalDiscountsSet))
 
   return orders.data?.orders?.edges.map((edge) => ({
     ...edge.node,
-    subtotalPrice: parseFloat(edge.node.subtotalPriceSet.shopMoney.amount),
+    subtotalPrice: parseFloat(edge.node.subtotalPriceSet.shopMoney.amount) + parseFloat(edge.node.totalDiscountsSet.shopMoney.amount),
+    totalDiscounts: parseFloat(edge.node.totalDiscountsSet.shopMoney.amount),
   })) as Order[]
 }

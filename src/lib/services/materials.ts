@@ -50,12 +50,22 @@ export const getAssignedOrders = async (orders: string[]) => {
 }
 
 export const getUnpaidOrders = async () => {
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   const unpaidOrders = await directus(DIRECTUS_ADMIN_KEY).request(readItems('orders', {
     limit: 300,
     filter: {
-      paid: {
-        _neq: true
-      }
+      _or: [
+        {
+          paid: { _neq: true }
+        },
+        {
+          _and: [
+            { paid: { _eq: true } },
+            //@ts-expect-error
+            { date_updated: { _gte: oneWeekAgo } }
+          ]
+        }
+      ]
     }
   }))
   return unpaidOrders

@@ -27,8 +27,10 @@
     return {
       orders: data.unpaidOrders.flatMap(order => {
         totals.totalReady += order.ready ? 1 : 0;
-        totals.totalSubtotalPrice += data.orders[order.order]?.subtotalPrice;
-        assignedSubtotals[order?.goblin?.key] += data.orders[order.order]?.subtotalPrice;
+        if (!order.paid) {
+          totals.totalSubtotalPrice += data.orders[order.order]?.subtotalPrice;
+          assignedSubtotals[order?.goblin?.key] += data.orders[order.order]?.subtotalPrice;
+        }
 
         return {
           orderId: data.orders[order.order]?.id,
@@ -87,7 +89,7 @@
   </thead>
   <tbody>
     {#each orders as order}
-      <tr>
+      <tr class:paid={order.paid}>
         <td class="td--small"><a href="https://admin.shopify.com/store/foxes-and-ravens/orders/{order.orderId.split('/Order/')[1]}" target="_blank">{order.order}</a></td>
         <td class="td--small">{relativeDate(data.orders[order.order]?.createdAt)}</td>
         <td>{order.tags ? order.tags.join(', ') : ''}</td>
@@ -156,6 +158,10 @@
       td.alert {
         background-color: rgba($rouge, 0.333);
       }
+    }
+
+    tr.paid {
+      opacity: 0.33;
     }
 
     td, th {

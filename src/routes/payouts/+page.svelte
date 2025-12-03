@@ -27,7 +27,7 @@
     return {
       orders: data.unpaidOrders.flatMap(order => {
         totals.totalReady += order.ready ? 1 : 0;
-        if (!order.paid) {
+        if (!order.paid && order.ready) {
           totals.totalSubtotalPrice += data.orders[order.order]?.subtotalPrice;
           assignedSubtotals[order?.goblin?.key] += data.orders[order.order]?.subtotalPrice;
         }

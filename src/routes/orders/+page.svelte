@@ -7,6 +7,7 @@
   let { data } = $props()
 </script>
 
+<!-- <pre>{JSON.stringify(data.customersWithMultipleOrders, null, 2)}</pre> -->
 <pre>{JSON.stringify(data.sankeyData, null, 2)}</pre>
 
 

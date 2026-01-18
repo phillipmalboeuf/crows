@@ -1,13 +1,15 @@
-import { getCustomerOrderSequenceSankeyData, getDatabaseOrders } from '$lib/services/database';
+import { getCustomerOrderSequenceSankeyData, getCustomersWithMultipleOrders, getDatabaseOrders } from '$lib/services/database';
 
 
 export const load = async ({ request }) => {
-  const [sankeyData] = await Promise.all([
+  const [sankeyData, customersWithMultipleOrders] = await Promise.all([
     getCustomerOrderSequenceSankeyData(),
+    getCustomersWithMultipleOrders()
     // getDatabaseOrders()
   ])
   
   return {
     sankeyData,
+    customersWithMultipleOrders
   }
 }

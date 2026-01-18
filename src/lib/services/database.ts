@@ -1,5 +1,5 @@
-import { desc, eq } from 'drizzle-orm';
-import { orders as ordersTable } from '../../../drizzle/schema';
+import { desc, eq, gt } from 'drizzle-orm';
+import { orders as ordersTable, customers as customersTable } from '../../../drizzle/schema';
 import { db } from '$lib/clients/database';
 
 export const getDatabaseOrders = async () => {
@@ -48,10 +48,24 @@ export const getDatabaseOrders = async () => {
   return orders
 }
 
+export const getCustomersWithMultipleOrders = async () => {
+  const customers = await db.select({
+    id: customersTable.id,
+    email: customersTable.email,
+    ordersCount: customersTable.ordersCount
+  })
+    .from(customersTable)
+    .where(gt(customersTable.ordersCount, 1));
+
+  return customers;
+}
+
+
 export type SankeyDataPoint = {
   from: string;
   to: string;
   value: number;
+  customerIds: string[];
 }
 
 /**
@@ -71,7 +85,8 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
     })
       .from(ordersTable)
       .where(eq(ordersTable.fulfillmentStatus, 'fulfilled'))
-      .orderBy(ordersTable.createdAt);
+      .orderBy(ordersTable.createdAt)
+      .limit(4000);
   } catch (error: any) {
     console.error('Database query error:', error);
     console.error('Error message:', error?.message);
@@ -94,8 +109,8 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
     customerOrdersMap.get(customerId)!.push(order);
   }
 
-  // Sort each customer's orders by date and extract first product from each order
-  const customerOrderProducts: Map<string, string[]> = new Map();
+  // Sort each customer's orders by date and extract all products from each order
+  const customerOrderProducts: Map<string, string[][]> = new Map();
   
   for (const [customerId, customerOrders] of customerOrdersMap.entries()) {
     // Sort by creation date
@@ -105,65 +120,124 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
       return dateA - dateB;
     });
 
-    // Extract first product from each order
-    const products = sortedOrders
+    // Extract all products from all line items in each order
+    const orderProducts: string[][] = sortedOrders
       .map(order => {
         const lineItems = order.lineItems as any;
         if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
-          return null;
+          return [];
         }
         
-        const firstLineItem = lineItems[0];
-        // Try to get product title from various possible structures
-        const productTitle = 
-          firstLineItem?.product?.title ||
-          firstLineItem?.variant?.product?.title ||
-          firstLineItem?.title ||
-          'Unknown Product';
+        // Extract all products from all line items
+        const products = lineItems
+          .map((lineItem: any) => {
+            // Try to get product title from various possible structures
+            const productTitle = 
+              lineItem?.product?.title ||
+              lineItem?.variant?.product?.title ||
+              lineItem?.title ||
+              'Unknown Product';
+            
+            return productTitle;
+          })
+          .filter((product: string | null): product is string => product !== null);
         
-        return productTitle;
+        return products;
       })
-      .filter((product): product is string => product !== null);
+      .filter((products: string[]): products is string[] => products.length > 0);
 
-    if (products.length > 0) {
-      customerOrderProducts.set(customerId, products);
+    if (orderProducts.length > 0) {
+      customerOrderProducts.set(customerId, orderProducts);
     }
   }
 
-  // Build transition counts
-  // First to Second transitions
-  const firstToSecond = new Map<string, Map<string, number>>();
-  // Second to Third transitions
-  const secondToThird = new Map<string, Map<string, number>>();
+  // Build transition counts with customer tracking
+  // First to Second transitions: Map<fromProduct, Map<toProduct, { count: number, customerIds: string[] }>>
+  const firstToSecond = new Map<string, Map<string, { count: number; customerIds: string[] }>>();
+  // Second to Third transitions: Map<fromProduct, Map<toProduct, { count: number, customerIds: string[] }>>
+  const secondToThird = new Map<string, Map<string, { count: number; customerIds: string[] }>>();
+  // Third to Fourth transitions: Map<fromProduct, Map<toProduct, { count: number, customerIds: string[] }>>
+  const thirdToFourth = new Map<string, Map<string, { count: number; customerIds: string[] }>>();
   // Product counts for first orders
   const firstOrderCounts = new Map<string, number>();
 
-  for (const products of customerOrderProducts.values()) {
-    if (products.length >= 1) {
-      const firstProduct = products[0];
-      firstOrderCounts.set(firstProduct, (firstOrderCounts.get(firstProduct) || 0) + 1);
+  for (const [customerId, orderProducts] of customerOrderProducts.entries()) {
+    // orderProducts is an array of arrays: [[order1_products], [order2_products], ...]
+    
+    // Track first order products
+    if (orderProducts.length >= 1 && orderProducts[0].length > 0) {
+      for (const product of orderProducts[0]) {
+        firstOrderCounts.set(product, (firstOrderCounts.get(product) || 0) + 1);
+      }
     }
 
-    if (products.length >= 2) {
-      const firstProduct = products[0];
-      const secondProduct = products[1];
+    // First → Second order transitions (all products in order 1 → all products in order 2)
+    if (orderProducts.length >= 2) {
+      const firstOrderProducts = orderProducts[0];
+      const secondOrderProducts = orderProducts[1];
       
-      if (!firstToSecond.has(firstProduct)) {
-        firstToSecond.set(firstProduct, new Map());
+      // Create transitions from each product in first order to each product in second order
+      for (const firstProduct of firstOrderProducts) {
+        if (!firstToSecond.has(firstProduct)) {
+          firstToSecond.set(firstProduct, new Map());
+        }
+        const secondMap = firstToSecond.get(firstProduct)!;
+        
+        for (const secondProduct of secondOrderProducts) {
+          if (!secondMap.has(secondProduct)) {
+            secondMap.set(secondProduct, { count: 0, customerIds: [] });
+          }
+          const transition = secondMap.get(secondProduct)!;
+          transition.count++;
+          transition.customerIds.push(customerId);
+        }
       }
-      const secondMap = firstToSecond.get(firstProduct)!;
-      secondMap.set(secondProduct, (secondMap.get(secondProduct) || 0) + 1);
     }
 
-    if (products.length >= 3) {
-      const secondProduct = products[1];
-      const thirdProduct = products[2];
+    // Second → Third order transitions (all products in order 2 → all products in order 3)
+    if (orderProducts.length >= 3) {
+      const secondOrderProducts = orderProducts[1];
+      const thirdOrderProducts = orderProducts[2];
       
-      if (!secondToThird.has(secondProduct)) {
-        secondToThird.set(secondProduct, new Map());
+      // Create transitions from each product in second order to each product in third order
+      for (const secondProduct of secondOrderProducts) {
+        if (!secondToThird.has(secondProduct)) {
+          secondToThird.set(secondProduct, new Map());
+        }
+        const thirdMap = secondToThird.get(secondProduct)!;
+        
+        for (const thirdProduct of thirdOrderProducts) {
+          if (!thirdMap.has(thirdProduct)) {
+            thirdMap.set(thirdProduct, { count: 0, customerIds: [] });
+          }
+          const transition = thirdMap.get(thirdProduct)!;
+          transition.count++;
+          transition.customerIds.push(customerId);
+        }
       }
-      const thirdMap = secondToThird.get(secondProduct)!;
-      thirdMap.set(thirdProduct, (thirdMap.get(thirdProduct) || 0) + 1);
+    }
+
+    // Third → Fourth order transitions (all products in order 3 → all products in order 4)
+    if (orderProducts.length >= 4) {
+      const thirdOrderProducts = orderProducts[2];
+      const fourthOrderProducts = orderProducts[3];
+      
+      // Create transitions from each product in third order to each product in fourth order
+      for (const thirdProduct of thirdOrderProducts) {
+        if (!thirdToFourth.has(thirdProduct)) {
+          thirdToFourth.set(thirdProduct, new Map());
+        }
+        const fourthMap = thirdToFourth.get(thirdProduct)!;
+        
+        for (const fourthProduct of fourthOrderProducts) {
+          if (!fourthMap.has(fourthProduct)) {
+            fourthMap.set(fourthProduct, { count: 0, customerIds: [] });
+          }
+          const transition = fourthMap.get(fourthProduct)!;
+          transition.count++;
+          transition.customerIds.push(customerId);
+        }
+      }
     }
   }
 
@@ -172,22 +246,37 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
 
   // Add first → second transitions
   for (const [fromProduct, toProducts] of firstToSecond.entries()) {
-    for (const [toProduct, count] of toProducts.entries()) {
+    for (const [toProduct, transition] of toProducts.entries()) {
       sankeyData.push({
         from: fromProduct,
         to: toProduct,
-        value: count
+        value: transition.count,
+        customerIds: transition.customerIds
       });
+      sankeyData.sort((a, b) => b.value - a.value);
     }
   }
 
   // Add second → third transitions
   for (const [fromProduct, toProducts] of secondToThird.entries()) {
-    for (const [toProduct, count] of toProducts.entries()) {
+    for (const [toProduct, transition] of toProducts.entries()) {
       sankeyData.push({
         from: fromProduct,
         to: toProduct,
-        value: count
+        value: transition.count,
+        customerIds: transition.customerIds
+      });
+    }
+  }
+
+  // Add third → fourth transitions
+  for (const [fromProduct, toProducts] of thirdToFourth.entries()) {
+    for (const [toProduct, transition] of toProducts.entries()) {
+      sankeyData.push({
+        from: fromProduct,
+        to: toProduct,
+        value: transition.count,
+        customerIds: transition.customerIds
       });
     }
   }

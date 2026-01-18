@@ -85,7 +85,7 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
       lineItems: ordersTable.lineItems
     })
       .from(ordersTable)
-      .where(eq(ordersTable.fulfillmentStatus, 'fulfilled'))
+      // .where(eq(ordersTable.fulfillmentStatus, 'fulfilled'))
       .orderBy(ordersTable.createdAt)
       .limit(5000),
     

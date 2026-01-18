@@ -1,10 +1,6 @@
 import { shopify } from '$lib/clients/shopify'
 import { DateTime } from 'luxon'
 
-import { desc, eq } from 'drizzle-orm';
-import { publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A } from '../../../drizzle/schema';
-import { db } from '$lib/clients/database';
-
 export type Order = {
   id: string
   name: string
@@ -141,50 +137,4 @@ export const getOrdersByNumbers = async (numbers: string[]) => {
     subtotalPrice: parseFloat(edge.node.subtotalPriceSet.shopMoney.amount) + parseFloat(edge.node.totalDiscountsSet.shopMoney.amount),
     totalDiscounts: parseFloat(edge.node.totalDiscountsSet.shopMoney.amount),
   })) as Order[]
-}
-
-export const getDatabaseOrders = async () => {
-  const now = DateTime.now()
-  // const daysAgo = now.minus({ days: 90 })
-  // const daysAgoString = daysAgo.toISODate()
-
-  const orders = await db.select().from(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A).where(eq(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A.fulfillmentStatus, 'fulfilled')).orderBy(desc(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A.createdAt)).limit(2000)
-
-  // const orders = await shopify.query({
-  //   data: `
-  //     query {
-  //       orders(first: 250, sortKey: CREATED_AT, reverse: true, query: "fulfillment_status:fulfilled") {
-  //         edges {
-  //           node {
-  //             id
-  //             name
-  //             createdAt
-  //             customer {
-  //               id
-  //             }
-  //             lineItems(first: 10) {
-  //               edges {
-  //                 node {
-  //                   title
-  //                   quantity
-  //                   variant {
-  //                     id
-  //                     product {
-  //                       id
-  //                       title
-  //                     }
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `
-  // })
-
-  // console.log(orders)
-
-  return orders
 }

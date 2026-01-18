@@ -1,326 +1,9 @@
-import { pgTable, index, varchar, timestamp, jsonb, bigint, boolean, numeric } from "drizzle-orm/pg-core"
+import { pgTable, index, varchar, timestamp, jsonb, bigint, numeric, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
 
-export const publicdraftOrders79B101B4Ca87B10B58E3D5B0A862B13B = pgTable("publicdraft_orders79b101b4ca87b10b58e3d5b0a862b13b", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	name: varchar(),
-	note: varchar(),
-	tags: varchar(),
-	email: varchar(),
-	status: varchar(),
-	currency: varchar(),
-	customer: jsonb(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	orderId: bigint("order_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	poNumber: varchar("po_number"),
-	taxLines: jsonb("tax_lines"),
-	totalTax: varchar("total_tax"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	lineItems: jsonb("line_items"),
-	taxExempt: boolean("tax_exempt"),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	invoiceUrl: varchar("invoice_url"),
-	totalPrice: varchar("total_price"),
-	completedAt: timestamp("completed_at", { withTimezone: true, mode: 'string' }),
-	paymentTerms: varchar("payment_terms"),
-	shippingLine: jsonb("shipping_line"),
-	subtotalPrice: varchar("subtotal_price"),
-	taxesIncluded: boolean("taxes_included"),
-	billingAddress: jsonb("billing_address"),
-	invoiceSentAt: timestamp("invoice_sent_at", { withTimezone: true, mode: 'string' }),
-	noteAttributes: jsonb("note_attributes"),
-	appliedDiscount: jsonb("applied_discount"),
-	shippingAddress: jsonb("shipping_address"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicdraft_orders79b101b4ca87b10b58e3d5b0a862b13b").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicdraft_orders79b101b4ca87b10b58e3d5b0a862").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicdraft_orders79b101b4ca87b10b58e3d5b0a862b13b").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicfulfillments9Ef4952974E9189568C8D1Bff7774035 = pgTable("publicfulfillments9ef4952974e9189568c8d1bff7774035", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	name: varchar(),
-	duties: jsonb(),
-	status: varchar(),
-	receipt: jsonb(),
-	service: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	orderId: bigint("order_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	lineItems: jsonb("line_items"),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	locationId: bigint("location_id", { mode: "number" }),
-	trackingUrl: varchar("tracking_url"),
-	trackingUrls: jsonb("tracking_urls"),
-	originAddress: jsonb("origin_address"),
-	notifyCustomer: boolean("notify_customer"),
-	shipmentStatus: varchar("shipment_status"),
-	trackingNumber: varchar("tracking_number"),
-	trackingCompany: varchar("tracking_company"),
-	trackingNumbers: jsonb("tracking_numbers"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	variantInventoryManagement: varchar("variant_inventory_management"),
-}, (table) => [
-	index("idx_cursor_publicfulfillments9ef4952974e9189568c8d1bff7774035").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicfulfillments9ef4952974e9189568c8d1bff777").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicfulfillments9ef4952974e9189568c8d1bff7774035").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicinventoryLevelseaea063F3Dd4B6Fdbc6F7847545D6Ad6 = pgTable("publicinventory_levelseaea063f3dd4b6fdbc6f7847545d6ad6", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	id: varchar(),
-	shopUrl: varchar("shop_url"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	available: bigint({ mode: "number" }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	quantities: jsonb(),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	locationId: bigint("location_id", { mode: "number" }),
-	canDeactivate: boolean("can_deactivate"),
-	locationsCount: jsonb("locations_count"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	inventoryItemId: bigint("inventory_item_id", { mode: "number" }),
-	deactivationAlert: varchar("deactivation_alert"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	inventoryHistoryUrl: varchar("inventory_history_url"),
-}, (table) => [
-	index("idx_cursor_publicinventory_levelseaea063f3dd4b6fdbc6f7847545d6a").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicinventory_levelseaea063f3dd4b6fdbc6f7847").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicinventory_levelseaea063f3dd4b6fdbc6f7847545d6ad6").using("btree", table.id.asc().nullsLast().op("text_ops")),
-]);
-
-export const publicmetafielustomers4Ff8F0B973F7393D481891A1Ea9Bc7E7 = pgTable("publicmetafielustomers4ff8f0b973f7393d481891a1ea9bc7e7", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafielustomers4ff8f0b973f7393d481891a1ea9bc7").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielustomers4ff8f0b973f7393d481891a1").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielustomers4ff8f0b973f7393d481891a1ea9bc7e7").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafielocations9Df64230C69C37513F0C9F861774075D = pgTable("publicmetafielocations9df64230c69c37513f0c9f861774075d", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafielocations9df64230c69c37513f0c9f86177407").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielocations9df64230c69c37513f0c9f86").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielocations9df64230c69c37513f0c9f861774075d").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafieltImages38Af7522443Cf591885F430505Fcbfae = pgTable("publicmetafielt_images38af7522443cf591885f430505fcbfae", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafielt_images38af7522443cf591885f430505fcbf").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielt_images38af7522443cf591885f4305").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielt_images38af7522443cf591885f430505fcbfae").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafielvariants04A27F8C18F90Da86C18A43844Bd76F1 = pgTable("publicmetafielvariants04a27f8c18f90da86c18a43844bd76f1", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafielvariants04a27f8c18f90da86c18a43844bd76").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielvariants04a27f8c18f90da86c18a438").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielvariants04a27f8c18f90da86c18a43844bd76f1").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafieldShops446C956F6Cbfd06D2619F6E1A6712640 = pgTable("publicmetafield_shops446c956f6cbfd06d2619f6e1a6712640", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafield_shops446c956f6cbfd06d2619f6e1a671264").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafield_shops446c956f6cbfd06d2619f6e1a").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafield_shops446c956f6cbfd06d2619f6e1a6712640").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafielproducts206D401F7B8C7190692D8C2116626B45 = pgTable("publicmetafielproducts206d401f7b8c7190692d8c2116626b45", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafielproducts206d401f7b8c7190692d8c2116626b").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielproducts206d401f7b8c7190692d8c21").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielproducts206d401f7b8c7190692d8c2116626b45").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicorderAgreements862Ca4835680Ffeac9F4Ac4Fe2Cf787D = pgTable("publicorder_agreements862ca4835680ffeac9f4ac4fe2cf787d", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	agreements: jsonb(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicorder_agreements862ca4835680ffeac9f4ac4fe2cf78").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicorder_agreements862ca4835680ffeac9f4ac4f").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicorder_agreements862ca4835680ffeac9f4ac4fe2cf787d").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicmetafiellectionsed3C16A36B007B3Df1Bddc5Cf8Eb518C = pgTable("publicmetafiellectionsed3c16a36b007b3df1bddc5cf8eb518c", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	key: varchar(),
-	type: varchar(),
-	value: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	ownerId: bigint("owner_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	namespace: varchar(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	description: varchar(),
-	ownerResource: varchar("owner_resource"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicmetafiellectionsed3c16a36b007b3df1bddc5cf8eb51").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafiellectionsed3c16a36b007b3df1bddc5c").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafiellectionsed3c16a36b007b3df1bddc5cf8eb518c").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publiccollectionsbc629A20F586907F9Ce6Ea6429A6E2F8 = pgTable("publiccollectionsbc629a20f586907f9ce6ea6429a6e2f8", {
+export const collections = pgTable("collections", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -342,12 +25,12 @@ export const publiccollectionsbc629A20F586907F9Ce6Ea6429A6E2F8 = pgTable("public
 	templateSuffix: varchar("template_suffix"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publiccollectionsbc629a20f586907f9ce6ea6429a6e2f8").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publiccollectionsbc629a20f586907f9ce6ea6429a6e").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccollectionsbc629a20f586907f9ce6ea6429a6e2f8").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_collections").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_collections").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_collections").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicabandoneheckouts6Ea760B115825312576019E62Fe605B5 = pgTable("publicabandoneheckouts6ea760b115825312576019e62fe605b5", {
+export const abandonedCheckouts = pgTable("abandoned_checkouts", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -401,12 +84,12 @@ export const publicabandoneheckouts6Ea760B115825312576019E62Fe605B5 = pgTable("p
 	totalLineItemsPrice: numeric("total_line_items_price"),
 	buyerAcceptsMarketing: boolean("buyer_accepts_marketing"),
 }, (table) => [
-	index("idx_cursor_publicabandoneheckouts6ea760b115825312576019e62fe605").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicabandoneheckouts6ea760b115825312576019e6").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicabandoneheckouts6ea760b115825312576019e62fe605b5").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_abandoned_checkouts").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_abandoned_checkouts").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_abandoned_checkouts").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publiccollectsbb08F46B51982F1Fb77130C6Ef8D92Ee = pgTable("publiccollectsbb08f46b51982f1fb77130c6ef8d92ee", {
+export const collects = pgTable("collects", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -425,12 +108,194 @@ export const publiccollectsbb08F46B51982F1Fb77130C6Ef8D92Ee = pgTable("publiccol
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	collectionId: bigint("collection_id", { mode: "number" }),
 }, (table) => [
-	index("idx_cursor_publiccollectsbb08f46b51982f1fb77130c6ef8d92ee").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-	index("idx_extracted_at_publiccollectsbb08f46b51982f1fb77130c6ef8d92ee").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccollectsbb08f46b51982f1fb77130c6ef8d92ee").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_collects").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_collects").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_collects").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publiccustomClections3228491375F12E53D8F674A1199E5E2C = pgTable("publiccustom_clections3228491375f12e53d8f674a1199e5e2c", {
+export const customerJourneySummary = pgTable("customer_journey_summary", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	orderId: bigint("order_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	customerJourneySummary: jsonb("customer_journey_summary"),
+}, (table) => [
+	index("idx_cursor_customer_journey_summary").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_customer_journey_summary").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_customer_journey_summary").using("btree", table.orderId.asc().nullsLast().op("int8_ops")),
+]);
+
+export const draftOrders = pgTable("draft_orders", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	name: varchar(),
+	note: varchar(),
+	tags: varchar(),
+	email: varchar(),
+	status: varchar(),
+	currency: varchar(),
+	customer: jsonb(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	orderId: bigint("order_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	poNumber: varchar("po_number"),
+	taxLines: jsonb("tax_lines"),
+	totalTax: varchar("total_tax"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	lineItems: jsonb("line_items"),
+	taxExempt: boolean("tax_exempt"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	invoiceUrl: varchar("invoice_url"),
+	totalPrice: varchar("total_price"),
+	completedAt: timestamp("completed_at", { withTimezone: true, mode: 'string' }),
+	paymentTerms: varchar("payment_terms"),
+	shippingLine: jsonb("shipping_line"),
+	subtotalPrice: varchar("subtotal_price"),
+	taxesIncluded: boolean("taxes_included"),
+	billingAddress: jsonb("billing_address"),
+	invoiceSentAt: timestamp("invoice_sent_at", { withTimezone: true, mode: 'string' }),
+	noteAttributes: jsonb("note_attributes"),
+	appliedDiscount: jsonb("applied_discount"),
+	shippingAddress: jsonb("shipping_address"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_draft_orders").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_draft_orders").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_draft_orders").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const fulfillments = pgTable("fulfillments", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	name: varchar(),
+	duties: jsonb(),
+	status: varchar(),
+	receipt: jsonb(),
+	service: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	orderId: bigint("order_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	lineItems: jsonb("line_items"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	locationId: bigint("location_id", { mode: "number" }),
+	trackingUrl: varchar("tracking_url"),
+	trackingUrls: jsonb("tracking_urls"),
+	originAddress: jsonb("origin_address"),
+	notifyCustomer: boolean("notify_customer"),
+	shipmentStatus: varchar("shipment_status"),
+	trackingNumber: varchar("tracking_number"),
+	trackingCompany: varchar("tracking_company"),
+	trackingNumbers: jsonb("tracking_numbers"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	variantInventoryManagement: varchar("variant_inventory_management"),
+}, (table) => [
+	index("idx_cursor_fulfillments").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_fulfillments").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_fulfillments").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const inventoryLevels = pgTable("inventory_levels", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	id: varchar(),
+	shopUrl: varchar("shop_url"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	available: bigint({ mode: "number" }),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	quantities: jsonb(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	locationId: bigint("location_id", { mode: "number" }),
+	canDeactivate: boolean("can_deactivate"),
+	locationsCount: jsonb("locations_count"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	inventoryItemId: bigint("inventory_item_id", { mode: "number" }),
+	deactivationAlert: varchar("deactivation_alert"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	inventoryHistoryUrl: varchar("inventory_history_url"),
+}, (table) => [
+	index("idx_cursor_inventory_levels").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_inventory_levels").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_inventory_levels").using("btree", table.id.asc().nullsLast().op("text_ops")),
+]);
+
+export const metafieldCollections = pgTable("metafield_collections", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_collections").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_collections").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_collections").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const metafieldDraftOrders = pgTable("metafield_draft_orders", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_draft_orders").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_draft_orders").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_draft_orders").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const customCollections = pgTable("custom_collections", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -453,31 +318,12 @@ export const publiccustomClections3228491375F12E53D8F674A1199E5E2C = pgTable("pu
 	deletedDescription: varchar("deleted_description"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publiccustom_clections3228491375f12e53d8f674a1199e5e").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publiccustom_clections3228491375f12e53d8f674a1").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccustom_clections3228491375f12e53d8f674a1199e5e2c").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_custom_collections").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_custom_collections").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_custom_collections").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publiccustomerSummary83E70F07F5A3B06C51005A29988Aca51 = pgTable("publiccustomer_summary83e70f07f5a3b06c51005a29988aca51", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	orderId: bigint("order_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	customerJourneySummary: jsonb("customer_journey_summary"),
-}, (table) => [
-	index("idx_cursor_publiccustomer_summary83e70f07f5a3b06c51005a29988aca").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publiccustomer_summary83e70f07f5a3b06c51005a29").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccustomer_summary83e70f07f5a3b06c51005a29988aca51").using("btree", table.orderId.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publiccustomersfe732Ab41Ed3Bee12C8Bd482D67Fefd8 = pgTable("publiccustomersfe732ab41ed3bee12c8bd482d67fefd8", {
+export const customers = pgTable("customers", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -515,12 +361,12 @@ export const publiccustomersfe732Ab41Ed3Bee12C8Bd482D67Fefd8 = pgTable("publiccu
 	emailMarketingConsent: jsonb("email_marketing_consent"),
 	acceptsMarketingUpdatedAt: jsonb("accepts_marketing_updated_at"),
 }, (table) => [
-	index("idx_cursor_publiccustomersfe732ab41ed3bee12c8bd482d67fefd8").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publiccustomersfe732ab41ed3bee12c8bd482d67fefd").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccustomersfe732ab41ed3bee12c8bd482d67fefd8").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_customers").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_customers").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_customers").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicdiscountCodes81E54B50A03C77Cd76Efb3D1C8Bf3A79 = pgTable("publicdiscount_codes81e54b50a03c77cd76efb3d1c8bf3a79", {
+export const discountCodes = pgTable("discount_codes", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -553,12 +399,12 @@ export const publicdiscountCodes81E54B50A03C77Cd76Efb3D1C8Bf3A79 = pgTable("publ
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 	appliesOncePerCustomer: boolean("applies_once_per_customer"),
 }, (table) => [
-	index("idx_cursor_publicdiscount_codes81e54b50a03c77cd76efb3d1c8bf3a79").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicdiscount_codes81e54b50a03c77cd76efb3d1c8").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicdiscount_codes81e54b50a03c77cd76efb3d1c8bf3a79").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_discount_codes").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_discount_codes").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_discount_codes").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicfulfillmtOrders7A1Ed405627D57677Cd891318378D37F = pgTable("publicfulfillmt_orders7a1ed405627d57677cd891318378d37f", {
+export const fulfillmentOrders = pgTable("fulfillment_orders", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -591,12 +437,12 @@ export const publicfulfillmtOrders7A1Ed405627D57677Cd891318378D37F = pgTable("pu
 	assignedLocationId: bigint("assigned_location_id", { mode: "number" }),
 	internationalDuties: varchar("international_duties"),
 }, (table) => [
-	index("idx_cursor_publicfulfillmt_orders7a1ed405627d57677cd891318378d3").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicfulfillmt_orders7a1ed405627d57677cd89131").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicfulfillmt_orders7a1ed405627d57677cd891318378d37f").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_fulfillment_orders").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_fulfillment_orders").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_fulfillment_orders").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicinventoryItemse388Eecf9Cce8E96Ee4C6Ea53Cf05820 = pgTable("publicinventory_itemse388eecf9cce8e96ee4c6ea53cf05820", {
+export const inventoryItems = pgTable("inventory_items", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -620,12 +466,12 @@ export const publicinventoryItemse388Eecf9Cce8E96Ee4C6Ea53Cf05820 = pgTable("pub
 	provinceCodeOfOrigin: varchar("province_code_of_origin"),
 	countryHarmonizedSystemCodes: jsonb("country_harmonized_system_codes"),
 }, (table) => [
-	index("idx_cursor_publicinventory_itemse388eecf9cce8e96ee4c6ea53cf0582").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicinventory_itemse388eecf9cce8e96ee4c6ea53").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicinventory_itemse388eecf9cce8e96ee4c6ea53cf05820").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_inventory_items").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_inventory_items").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_inventory_items").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publiclocationsaffaf6F2Dfe22E8Bde5Cf276F602A62F = pgTable("publiclocationsaffaf6f2dfe22e8bde5cf276f602a62f", {
+export const locations = pgTable("locations", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -653,11 +499,11 @@ export const publiclocationsaffaf6F2Dfe22E8Bde5Cf276F602A62F = pgTable("publiclo
 	localizedCountryName: varchar("localized_country_name"),
 	localizedProvinceName: varchar("localized_province_name"),
 }, (table) => [
-	index("idx_extracted_at_publiclocationsaffaf6f2dfe22e8bde5cf276f602a62").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiclocationsaffaf6f2dfe22e8bde5cf276f602a62f").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_locations").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_locations").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicmetafiellections27Cd4237572F4435C93C15E3Dd1149B8 = pgTable("publicmetafiellections27cd4237572f4435c93c15e3dd1149b8", {
+export const metafieldCustomers = pgTable("metafield_customers", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -679,12 +525,12 @@ export const publicmetafiellections27Cd4237572F4435C93C15E3Dd1149B8 = pgTable("p
 	ownerResource: varchar("owner_resource"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publicmetafiellections27cd4237572f4435c93c15e3dd1149").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafiellections27cd4237572f4435c93c15e3").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafiellections27cd4237572f4435c93c15e3dd1149b8").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_metafield_customers").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_customers").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_customers").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicmetafieltOrders43Bdfc9F5Dfe5198923248B16885Aee9 = pgTable("publicmetafielt_orders43bdfc9f5dfe5198923248b16885aee9", {
+export const metafieldLocations = pgTable("metafield_locations", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -706,12 +552,12 @@ export const publicmetafieltOrders43Bdfc9F5Dfe5198923248B16885Aee9 = pgTable("pu
 	ownerResource: varchar("owner_resource"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publicmetafielt_orders43bdfc9f5dfe5198923248b16885ae").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafielt_orders43bdfc9f5dfe5198923248b1").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafielt_orders43bdfc9f5dfe5198923248b16885aee9").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_metafield_locations").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_locations").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_locations").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicmetafieldOrders72534Dff8Bce30966E60A31D527Df0D8 = pgTable("publicmetafield_orders72534dff8bce30966e60a31d527df0d8", {
+export const metafieldProductImages = pgTable("metafield_product_images", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -733,12 +579,66 @@ export const publicmetafieldOrders72534Dff8Bce30966E60A31D527Df0D8 = pgTable("pu
 	ownerResource: varchar("owner_resource"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publicmetafield_orders72534dff8bce30966e60a31d527df0").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicmetafield_orders72534dff8bce30966e60a31d").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicmetafield_orders72534dff8bce30966e60a31d527df0d8").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_metafield_product_images").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_product_images").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_product_images").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicorderRefunds94De9681F36726A969D173C4D0837A90 = pgTable("publicorder_refunds94de9681f36726a969d173c4d0837a90", {
+export const metafieldProductVariants = pgTable("metafield_product_variants", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_product_variants").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_product_variants").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_product_variants").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const metafieldSmartCollections = pgTable("metafield_smart_collections", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_smart_collections").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_smart_collections").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_smart_collections").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const orderRefunds = pgTable("order_refunds", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -763,12 +663,191 @@ export const publicorderRefunds94De9681F36726A969D173C4D0837A90 = pgTable("publi
 	refundLineItems: jsonb("refund_line_items"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publicorder_refunds94de9681f36726a969d173c4d0837a90").using("btree", table.createdAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicorder_refunds94de9681f36726a969d173c4d08").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicorder_refunds94de9681f36726a969d173c4d0837a90").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_order_refunds").using("btree", table.createdAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_order_refunds").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_order_refunds").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A = pgTable("publicorders4d64f11fd4dbaa07d147f1318ce8af5a", {
+export const orderRisks = pgTable("order_risks", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	score: numeric(),
+	source: varchar(),
+	display: boolean(),
+	message: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	orderId: bigint("order_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	assessments: jsonb(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	checkoutId: bigint("checkout_id", { mode: "number" }),
+	causeCancel: boolean("cause_cancel"),
+	recommendation: varchar(),
+	merchantMessage: varchar("merchant_message"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_order_risks").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_order_risks").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_order_risks").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const priceRules = pgTable("price_rules", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	title: varchar(),
+	value: varchar(),
+	endsAt: timestamp("ends_at", { withTimezone: true, mode: 'string' }),
+	shopUrl: varchar("shop_url"),
+	startsAt: timestamp("starts_at", { withTimezone: true, mode: 'string' }),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	targetType: varchar("target_type"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	usageLimit: bigint("usage_limit", { mode: "number" }),
+	deletedMessage: varchar("deleted_message"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	allocationLimit: bigint("allocation_limit", { mode: "number" }),
+	targetSelection: varchar("target_selection"),
+	allocationMethod: varchar("allocation_method"),
+	oncePerCustomer: boolean("once_per_customer"),
+	customerSelection: varchar("customer_selection"),
+	deletedDescription: varchar("deleted_description"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	entitledCountryIds: jsonb("entitled_country_ids"),
+	entitledProductIds: jsonb("entitled_product_ids"),
+	entitledVariantIds: jsonb("entitled_variant_ids"),
+	entitledCollectionIds: jsonb("entitled_collection_ids"),
+	prerequisiteProductIds: jsonb("prerequisite_product_ids"),
+	prerequisiteVariantIds: jsonb("prerequisite_variant_ids"),
+	prerequisiteCustomerIds: jsonb("prerequisite_customer_ids"),
+	prerequisiteCollectionIds: jsonb("prerequisite_collection_ids"),
+	prerequisiteQuantityRange: jsonb("prerequisite_quantity_range"),
+	prerequisiteSubtotalRange: jsonb("prerequisite_subtotal_range"),
+	prerequisiteSavedSearchIds: jsonb("prerequisite_saved_search_ids"),
+	customerSegmentPrerequisiteIds: jsonb("customer_segment_prerequisite_ids"),
+	prerequisiteShippingPriceRange: jsonb("prerequisite_shipping_price_range"),
+	prerequisiteToEntitlementPurchase: jsonb("prerequisite_to_entitlement_purchase"),
+	prerequisiteToEntitlementQuantityRatio: jsonb("prerequisite_to_entitlement_quantity_ratio"),
+}, (table) => [
+	index("idx_cursor_price_rules").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_price_rules").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_price_rules").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const metafieldOrders = pgTable("metafield_orders", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_orders").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_orders").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_orders").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const metafieldProducts = pgTable("metafield_products", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_products").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_products").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_products").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const metafieldShops = pgTable("metafield_shops", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	key: varchar(),
+	type: varchar(),
+	value: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	ownerId: bigint("owner_id", { mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	namespace: varchar(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	valueType: varchar("value_type"),
+	description: varchar(),
+	ownerResource: varchar("owner_resource"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_metafield_shops").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_metafield_shops").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_metafield_shops").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const orderAgreements = pgTable("order_agreements", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	agreements: jsonb(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_order_agreements").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_order_agreements").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_order_agreements").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const orders = pgTable("orders", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -879,12 +958,91 @@ export const publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A = pgTable("publicorder
 	originalTotalAdditionalFeesSet: jsonb("original_total_additional_fees_set"),
 	totalCashRoundingPaymentAdjustmentSet: jsonb("total_cash_rounding_payment_adjustment_set"),
 }, (table) => [
-	index("idx_cursor_publicorders4d64f11fd4dbaa07d147f1318ce8af5a").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicorders4d64f11fd4dbaa07d147f1318ce8af5a").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicorders4d64f11fd4dbaa07d147f1318ce8af5a").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_orders").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_orders").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_orders").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicproductImages18Ddb6A37Ffb0E556E8628A44610B703 = pgTable("publicproduct_images18ddb6a37ffb0e556e8628a44610b703", {
+export const productVariants = pgTable("product_variants", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	sku: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	grams: bigint({ mode: "number" }),
+	price: numeric(),
+	title: varchar(),
+	weight: numeric(),
+	barcode: varchar(),
+	option1: varchar(),
+	option2: varchar(),
+	option3: varchar(),
+	options: jsonb(),
+	taxable: boolean(),
+	tracked: boolean(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	imageId: bigint("image_id", { mode: "number" }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	position: bigint({ mode: "number" }),
+	shopUrl: varchar("shop_url"),
+	taxCode: varchar("tax_code"),
+	imageSrc: varchar("image_src"),
+	imageUrl: varchar("image_url"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	productId: bigint("product_id", { mode: "number" }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	weightUnit: varchar("weight_unit"),
+	displayName: varchar("display_name"),
+	compareAtPrice: varchar("compare_at_price"),
+	inventoryPolicy: varchar("inventory_policy"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	inventoryItemId: bigint("inventory_item_id", { mode: "number" }),
+	requiresShipping: boolean("requires_shipping"),
+	availableForSale: boolean("available_for_sale"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	inventoryQuantity: bigint("inventory_quantity", { mode: "number" }),
+	presentmentPrices: jsonb("presentment_prices"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	oldInventoryQuantity: bigint("old_inventory_quantity", { mode: "number" }),
+}, (table) => [
+	index("idx_cursor_product_variants").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_product_variants").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_product_variants").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const smartCollections = pgTable("smart_collections", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	rules: jsonb(),
+	title: varchar(),
+	handle: varchar(),
+	shopUrl: varchar("shop_url"),
+	bodyHtml: varchar("body_html"),
+	sortOrder: varchar("sort_order"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	disjunctive: boolean(),
+	publishedAt: timestamp("published_at", { withTimezone: true, mode: 'string' }),
+	publishedScope: varchar("published_scope"),
+	templateSuffix: varchar("template_suffix"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+}, (table) => [
+	index("idx_cursor_smart_collections").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_smart_collections").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_smart_collections").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const productImages = pgTable("product_images", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -908,12 +1066,68 @@ export const publicproductImages18Ddb6A37Ffb0E556E8628A44610B703 = pgTable("publ
 	variantIds: jsonb("variant_ids"),
 	adminGraphqlApiId: varchar("admin_graphql_api_id"),
 }, (table) => [
-	index("idx_cursor_publicproduct_images18ddb6a37ffb0e556e8628a44610b703").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicproduct_images18ddb6a37ffb0e556e8628a446").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicproduct_images18ddb6a37ffb0e556e8628a44610b703").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_product_images").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_product_images").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_product_images").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicdeletedProducts3433Ee1C42935D80B3F086E78E7C6Be0 = pgTable("publicdeleted_products3433ee1c42935d80b3f086e78e7c6be0", {
+export const products = pgTable("products", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	seo: jsonb(),
+	tags: varchar(),
+	image: jsonb(),
+	title: varchar(),
+	handle: varchar(),
+	images: jsonb(),
+	status: varchar(),
+	vendor: varchar(),
+	options: jsonb(),
+	feedback: jsonb(),
+	shopUrl: varchar("shop_url"),
+	variants: jsonb(),
+	bodyHtml: varchar("body_html"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	description: varchar(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	mediaCount: bigint("media_count", { mode: "number" }),
+	isGiftCard: boolean("is_gift_card"),
+	productType: varchar("product_type"),
+	publishedAt: timestamp("published_at", { withTimezone: true, mode: 'string' }),
+	featuredImage: jsonb("featured_image"),
+	featuredMedia: jsonb("featured_media"),
+	priceRangeV2: jsonb("price_range_v2"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	totalVariants: bigint("total_variants", { mode: "number" }),
+	deletedMessage: varchar("deleted_message"),
+	publishedScope: varchar("published_scope"),
+	templateSuffix: varchar("template_suffix"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	totalInventory: bigint("total_inventory", { mode: "number" }),
+	descriptionHtml: varchar("description_html"),
+	onlineStoreUrl: varchar("online_store_url"),
+	tracksInventory: boolean("tracks_inventory"),
+	legacyResourceId: varchar("legacy_resource_id"),
+	deletedDescription: varchar("deleted_description"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	requiresSellinPlan: boolean("requires_sellin_plan"),
+	hasOnlyDefaultVariant: boolean("has_only_default_variant"),
+	onlineStorePreviewUrl: varchar("online_store_preview_url"),
+	hasOutOfStockVariants: boolean("has_out_of_stock_variants"),
+}, (table) => [
+	index("idx_cursor_products").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_products").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_products").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const deletedProducts = pgTable("deleted_products", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -926,12 +1140,12 @@ export const publicdeletedProducts3433Ee1C42935D80B3F086E78E7C6Be0 = pgTable("pu
 	deletedMessage: varchar("deleted_message"),
 	deletedDescription: varchar("deleted_description"),
 }, (table) => [
-	index("idx_cursor_publicdeleted_products3433ee1c42935d80b3f086e78e7c6b").using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicdeleted_products3433ee1c42935d80b3f086e7").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicdeleted_products3433ee1c42935d80b3f086e78e7c6be0").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_deleted_products").using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_extracted_at_deleted_products").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_deleted_products").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicshop85Cc404C69B63Caae31D3130Bd452224 = pgTable("publicshop85cc404c69b63caae31d3130bd452224", {
+export const shop = pgTable("shop", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -999,11 +1213,11 @@ export const publicshop85Cc404C69B63Caae31D3130Bd452224 = pgTable("publicshop85c
 	moneyWithCurrencyInEmailsFormat: varchar("money_with_currency_in_emails_format"),
 	marketingSmsConsentEnabledAtCheckout: boolean("marketing_sms_consent_enabled_at_checkout"),
 }, (table) => [
-	index("idx_extracted_at_publicshop85cc404c69b63caae31d3130bd452224").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicshop85cc404c69b63caae31d3130bd452224").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_shop").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_shop").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publiccustomerAddress4D3F2524D09D9Fd7D624228C37651C4D = pgTable("publiccustomer_address4d3f2524d09d9fd7d624228c37651c4d", {
+export const customerAddress = pgTable("customer_address", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -1031,226 +1245,12 @@ export const publiccustomerAddress4D3F2524D09D9Fd7D624228C37651C4D = pgTable("pu
 	countryName: varchar("country_name"),
 	provinceCode: varchar("province_code"),
 }, (table) => [
-	index("idx_cursor_publiccustomer_address4d3f2524d09d9fd7d624228c37651c").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-	index("idx_extracted_at_publiccustomer_address4d3f2524d09d9fd7d624228c").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccustomer_address4d3f2524d09d9fd7d624228c37651c4d").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_cursor_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_customer_address").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
-export const publicorderRisks4637Ecbce1950E3680D8Fba0B7A8B3C3 = pgTable("publicorder_risks4637ecbce1950e3680d8fba0b7a8b3c3", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	score: numeric(),
-	source: varchar(),
-	display: boolean(),
-	message: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	orderId: bigint("order_id", { mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	assessments: jsonb(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	checkoutId: bigint("checkout_id", { mode: "number" }),
-	causeCancel: boolean("cause_cancel"),
-	recommendation: varchar(),
-	merchantMessage: varchar("merchant_message"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicorder_risks4637ecbce1950e3680d8fba0b7a8b3c3").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicorder_risks4637ecbce1950e3680d8fba0b7a8b").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicorder_risks4637ecbce1950e3680d8fba0b7a8b3c3").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicpriceRulesd672Ce23Efa4Dc4Ef079Eafaa8645C9E = pgTable("publicprice_rulesd672ce23efa4dc4ef079eafaa8645c9e", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	title: varchar(),
-	value: varchar(),
-	endsAt: timestamp("ends_at", { withTimezone: true, mode: 'string' }),
-	shopUrl: varchar("shop_url"),
-	startsAt: timestamp("starts_at", { withTimezone: true, mode: 'string' }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	valueType: varchar("value_type"),
-	targetType: varchar("target_type"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	usageLimit: bigint("usage_limit", { mode: "number" }),
-	deletedMessage: varchar("deleted_message"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	allocationLimit: bigint("allocation_limit", { mode: "number" }),
-	targetSelection: varchar("target_selection"),
-	allocationMethod: varchar("allocation_method"),
-	oncePerCustomer: boolean("once_per_customer"),
-	customerSelection: varchar("customer_selection"),
-	deletedDescription: varchar("deleted_description"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	entitledCountryIds: jsonb("entitled_country_ids"),
-	entitledProductIds: jsonb("entitled_product_ids"),
-	entitledVariantIds: jsonb("entitled_variant_ids"),
-	entitledCollectionIds: jsonb("entitled_collection_ids"),
-	prerequisiteProductIds: jsonb("prerequisite_product_ids"),
-	prerequisiteVariantIds: jsonb("prerequisite_variant_ids"),
-	prerequisiteCustomerIds: jsonb("prerequisite_customer_ids"),
-	prerequisiteCollectionIds: jsonb("prerequisite_collection_ids"),
-	prerequisiteQuantityRange: jsonb("prerequisite_quantity_range"),
-	prerequisiteSubtotalRange: jsonb("prerequisite_subtotal_range"),
-	prerequisiteSavedSearchIds: jsonb("prerequisite_saved_search_ids"),
-	customerSegmentPrerequisiteIds: jsonb("customer_segment_prerequisite_ids"),
-	prerequisiteShippingPriceRange: jsonb("prerequisite_shipping_price_range"),
-	prerequisiteToEntitlementPurchase: jsonb("prerequisite_to_entitlement_purchase"),
-	prerequisiteToEntitlementQuantityRatio: jsonb("prerequisite_to_entitlement_quantity_ratio"),
-}, (table) => [
-	index("idx_cursor_publicprice_rulesd672ce23efa4dc4ef079eafaa8645c9e").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicprice_rulesd672ce23efa4dc4ef079eafaa8645").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicprice_rulesd672ce23efa4dc4ef079eafaa8645c9e").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicproductsb85Ff759A171A5B9C3B40176A0D0F716 = pgTable("publicproductsb85ff759a171a5b9c3b40176a0d0f716", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	seo: jsonb(),
-	tags: varchar(),
-	image: jsonb(),
-	title: varchar(),
-	handle: varchar(),
-	images: jsonb(),
-	status: varchar(),
-	vendor: varchar(),
-	options: jsonb(),
-	feedback: jsonb(),
-	shopUrl: varchar("shop_url"),
-	variants: jsonb(),
-	bodyHtml: varchar("body_html"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	description: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	mediaCount: bigint("media_count", { mode: "number" }),
-	isGiftCard: boolean("is_gift_card"),
-	productType: varchar("product_type"),
-	publishedAt: timestamp("published_at", { withTimezone: true, mode: 'string' }),
-	featuredImage: jsonb("featured_image"),
-	featuredMedia: jsonb("featured_media"),
-	priceRangeV2: jsonb("price_range_v2"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	totalVariants: bigint("total_variants", { mode: "number" }),
-	deletedMessage: varchar("deleted_message"),
-	publishedScope: varchar("published_scope"),
-	templateSuffix: varchar("template_suffix"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	totalInventory: bigint("total_inventory", { mode: "number" }),
-	descriptionHtml: varchar("description_html"),
-	onlineStoreUrl: varchar("online_store_url"),
-	tracksInventory: boolean("tracks_inventory"),
-	legacyResourceId: varchar("legacy_resource_id"),
-	deletedDescription: varchar("deleted_description"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	requiresSellinPlan: boolean("requires_sellin_plan"),
-	hasOnlyDefaultVariant: boolean("has_only_default_variant"),
-	onlineStorePreviewUrl: varchar("online_store_preview_url"),
-	hasOutOfStockVariants: boolean("has_out_of_stock_variants"),
-}, (table) => [
-	index("idx_cursor_publicproductsb85ff759a171a5b9c3b40176a0d0f716").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicproductsb85ff759a171a5b9c3b40176a0d0f716").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicproductsb85ff759a171a5b9c3b40176a0d0f716").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicproductVariantsd86E03Cceeba1D62897B2Ee3755040C5 = pgTable("publicproduct_variantsd86e03cceeba1d62897b2ee3755040c5", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	sku: varchar(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	grams: bigint({ mode: "number" }),
-	price: numeric(),
-	title: varchar(),
-	weight: numeric(),
-	barcode: varchar(),
-	option1: varchar(),
-	option2: varchar(),
-	option3: varchar(),
-	options: jsonb(),
-	taxable: boolean(),
-	tracked: boolean(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	imageId: bigint("image_id", { mode: "number" }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	position: bigint({ mode: "number" }),
-	shopUrl: varchar("shop_url"),
-	taxCode: varchar("tax_code"),
-	imageSrc: varchar("image_src"),
-	imageUrl: varchar("image_url"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	productId: bigint("product_id", { mode: "number" }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	weightUnit: varchar("weight_unit"),
-	displayName: varchar("display_name"),
-	compareAtPrice: varchar("compare_at_price"),
-	inventoryPolicy: varchar("inventory_policy"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	inventoryItemId: bigint("inventory_item_id", { mode: "number" }),
-	requiresShipping: boolean("requires_shipping"),
-	availableForSale: boolean("available_for_sale"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	inventoryQuantity: bigint("inventory_quantity", { mode: "number" }),
-	presentmentPrices: jsonb("presentment_prices"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	oldInventoryQuantity: bigint("old_inventory_quantity", { mode: "number" }),
-}, (table) => [
-	index("idx_cursor_publicproduct_variantsd86e03cceeba1d62897b2ee3755040").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicproduct_variantsd86e03cceeba1d62897b2ee3").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicproduct_variantsd86e03cceeba1d62897b2ee3755040c5").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publicsmartColections803E54750De9443D27942D70D0717D5D = pgTable("publicsmart_colections803e54750de9443d27942d70d0717d5d", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	rules: jsonb(),
-	title: varchar(),
-	handle: varchar(),
-	shopUrl: varchar("shop_url"),
-	bodyHtml: varchar("body_html"),
-	sortOrder: varchar("sort_order"),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	disjunctive: boolean(),
-	publishedAt: timestamp("published_at", { withTimezone: true, mode: 'string' }),
-	publishedScope: varchar("published_scope"),
-	templateSuffix: varchar("template_suffix"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-}, (table) => [
-	index("idx_cursor_publicsmart_colections803e54750de9443d27942d70d0717d").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_extracted_at_publicsmart_colections803e54750de9443d27942d70").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publicsmart_colections803e54750de9443d27942d70d0717d5d").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const publiccountries64E94Aa50F6Fc04A564220Feff12B754 = pgTable("publiccountries64e94aa50f6fc04a564220feff12b754", {
+export const countries = pgTable("countries", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
 	airbyteMeta: jsonb("_airbyte_meta").notNull(),
@@ -1265,6 +1265,6 @@ export const publiccountries64E94Aa50F6Fc04A564220Feff12B754 = pgTable("publicco
 	restOfWorld: boolean("rest_of_world"),
 	translatedName: varchar("translated_name"),
 }, (table) => [
-	index("idx_extracted_at_publiccountries64e94aa50f6fc04a564220feff12b75").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_publiccountries64e94aa50f6fc04a564220feff12b754").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_countries").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_countries").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);

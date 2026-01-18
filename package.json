@@ -41,6 +41,7 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
+		"@amcharts/amcharts5": "^5.15.3",
 		"@directus/sdk": "^20.0.3",
 		"luxon": "^3.7.2",
 		"postgres": "^3.4.7"

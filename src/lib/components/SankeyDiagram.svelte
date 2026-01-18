@@ -33,8 +33,18 @@
       })
     );
 
+    // Configure tooltips to follow mouse position
+    series.links.template.setAll({
+      tooltipPosition: "pointer"
+    });
+
     // Set data
     series.data.setAll(data);
+
+    // Remove amCharts copyright/logo
+    if (chartRoot._logo) {
+      chartRoot._logo.dispose();
+    }
 
     // Animate appearance
     // series.appear(1000, 100);

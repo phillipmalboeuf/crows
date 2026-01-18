@@ -13,7 +13,7 @@
     <a href="/hours" aria-current={page.url.pathname === '/hours' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Heures' : 'Hours'}</a>
     <a href="/goblins" aria-current={page.url.pathname.startsWith('/goblins') ? 'page' : undefined}>Goblins</a>
     <a href="/payouts" aria-current={page.url.pathname === '/payouts' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Paiements' : 'Payouts'}</a>
-    <a href="/orders" aria-current={page.url.pathname === '/orders' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Commandes' : 'Orders'}</a>
+    <a href="/journeys" aria-current={page.url.pathname === '/journeys' ? 'page' : undefined}>{getLocale() === 'fr' ? 'Trajets' : 'Journeys'}</a>
   </nav>
   <nav class="flex flex--tight_gapped flex--middle">
     <button class:button--muted={getLocale() !== 'fr'} class:button--dark={getLocale() === 'fr'} onclick={() => setLocale('fr')}>Français</button>

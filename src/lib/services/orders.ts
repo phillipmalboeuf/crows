@@ -138,3 +138,47 @@ export const getOrdersByNumbers = async (numbers: string[]) => {
     totalDiscounts: parseFloat(edge.node.totalDiscountsSet.shopMoney.amount),
   })) as Order[]
 }
+
+export const getDatabaseOrders = async () => {
+  const now = DateTime.now()
+  // const daysAgo = now.minus({ days: 90 })
+  // const daysAgoString = daysAgo.toISODate()
+
+  // const orders = await shopify.query({
+  //   data: `
+  //     query {
+  //       orders(first: 250, sortKey: CREATED_AT, reverse: true, query: "fulfillment_status:fulfilled") {
+  //         edges {
+  //           node {
+  //             id
+  //             name
+  //             createdAt
+  //             customer {
+  //               id
+  //             }
+  //             lineItems(first: 10) {
+  //               edges {
+  //                 node {
+  //                   title
+  //                   quantity
+  //                   variant {
+  //                     id
+  //                     product {
+  //                       id
+  //                       title
+  //                     }
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `
+  // })
+
+  // console.log(orders)
+
+  return [] as Order[]
+}

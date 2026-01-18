@@ -87,7 +87,7 @@ export const getCustomerOrderSequenceSankeyData = async (): Promise<SankeyDataPo
       .from(ordersTable)
       .where(eq(ordersTable.fulfillmentStatus, 'fulfilled'))
       .orderBy(ordersTable.createdAt)
-      .limit(4000),
+      .limit(5000),
     
     // Fetch all products to create id -> title mapping
     db.select({

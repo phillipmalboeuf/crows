@@ -27,7 +27,9 @@
         sourceIdField: 'from',
         targetIdField: 'to',
         valueField: 'value',
-        paddingRight: 100
+        paddingRight: 100,
+        nodeWidth: 2,
+        nodeAlign: "left"
       })
     );
 

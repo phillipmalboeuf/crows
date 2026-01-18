@@ -1,6 +1,10 @@
 import { shopify } from '$lib/clients/shopify'
 import { DateTime } from 'luxon'
 
+import { desc, eq } from 'drizzle-orm';
+import { publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A } from '../../../drizzle/schema';
+import { db } from '$lib/clients/database';
+
 export type Order = {
   id: string
   name: string
@@ -144,6 +148,8 @@ export const getDatabaseOrders = async () => {
   // const daysAgo = now.minus({ days: 90 })
   // const daysAgoString = daysAgo.toISODate()
 
+  const orders = await db.select().from(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A).where(eq(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A.fulfillmentStatus, 'fulfilled')).orderBy(desc(publicorders4D64F11Fd4Dbaa07D147F1318Ce8Af5A.createdAt)).limit(2000)
+
   // const orders = await shopify.query({
   //   data: `
   //     query {
@@ -180,5 +186,5 @@ export const getDatabaseOrders = async () => {
 
   // console.log(orders)
 
-  return [] as Order[]
+  return orders
 }

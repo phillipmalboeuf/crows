@@ -10,6 +10,9 @@ export default defineConfig({
 			outdir: './src/lib/paraglide'
 		})
 	],
+	optimizeDeps: {
+		include: ['@amcharts/amcharts5']
+	},
 	css: {
 		preprocessorOptions: {
 			scss: {

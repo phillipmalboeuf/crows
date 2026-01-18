@@ -28,7 +28,7 @@
         targetIdField: 'to',
         valueField: 'value',
         paddingRight: 100,
-        nodeWidth: 2,
+        nodeWidth: 5,
         nodeAlign: "left"
       })
     );

@@ -1,7 +1,673 @@
-import { pgTable, index, varchar, timestamp, jsonb, bigint, numeric, boolean } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, json, boolean, integer, text, index, uuid, timestamp, foreignKey, bigint, jsonb, unique, numeric } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
+
+export const directusFields = pgTable("directus_fields", {
+	id: serial().primaryKey().notNull(),
+	collection: varchar({ length: 64 }).notNull(),
+	field: varchar({ length: 64 }).notNull(),
+	special: varchar({ length: 64 }),
+	interface: varchar({ length: 64 }),
+	options: json(),
+	display: varchar({ length: 64 }),
+	displayOptions: json("display_options"),
+	readonly: boolean().default(false).notNull(),
+	hidden: boolean().default(false).notNull(),
+	sort: integer(),
+	width: varchar({ length: 30 }).default('full'),
+	translations: json(),
+	note: text(),
+	conditions: json(),
+	required: boolean().default(false),
+	group: varchar({ length: 64 }),
+	validation: json(),
+	validationMessage: text("validation_message"),
+	searchable: boolean().default(true).notNull(),
+});
+
+export const directusActivity = pgTable("directus_activity", {
+	id: serial().primaryKey().notNull(),
+	action: varchar({ length: 45 }).notNull(),
+	user: uuid(),
+	timestamp: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	ip: varchar({ length: 50 }),
+	userAgent: text("user_agent"),
+	collection: varchar({ length: 64 }).notNull(),
+	item: varchar({ length: 255 }).notNull(),
+	origin: varchar({ length: 255 }),
+}, (table) => [
+	index().using("btree", table.timestamp.asc().nullsLast().op("timestamptz_ops")),
+]);
+
+export const directusRoles = pgTable("directus_roles", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 100 }).notNull(),
+	icon: varchar({ length: 64 }).default('supervised_user_circle').notNull(),
+	description: text(),
+	parent: uuid(),
+}, (table) => [
+	foreignKey({
+			columns: [table.parent],
+			foreignColumns: [table.id],
+			name: "directus_roles_parent_foreign"
+		}),
+]);
+
+export const directusPermissions = pgTable("directus_permissions", {
+	id: serial().primaryKey().notNull(),
+	collection: varchar({ length: 64 }).notNull(),
+	action: varchar({ length: 10 }).notNull(),
+	permissions: json(),
+	validation: json(),
+	presets: json(),
+	fields: text(),
+	policy: uuid().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.policy],
+			foreignColumns: [directusPolicies.id],
+			name: "directus_permissions_policy_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const directusCollections = pgTable("directus_collections", {
+	collection: varchar({ length: 64 }).primaryKey().notNull(),
+	icon: varchar({ length: 64 }),
+	note: text(),
+	displayTemplate: varchar("display_template", { length: 255 }),
+	hidden: boolean().default(false).notNull(),
+	singleton: boolean().default(false).notNull(),
+	translations: json(),
+	archiveField: varchar("archive_field", { length: 64 }),
+	archiveAppFilter: boolean("archive_app_filter").default(true).notNull(),
+	archiveValue: varchar("archive_value", { length: 255 }),
+	unarchiveValue: varchar("unarchive_value", { length: 255 }),
+	sortField: varchar("sort_field", { length: 64 }),
+	accountability: varchar({ length: 255 }).default('all'),
+	color: varchar({ length: 255 }),
+	itemDuplicationFields: json("item_duplication_fields"),
+	sort: integer(),
+	group: varchar({ length: 64 }),
+	collapse: varchar({ length: 255 }).default('open').notNull(),
+	previewUrl: varchar("preview_url", { length: 255 }),
+	versioning: boolean().default(false).notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.group],
+			foreignColumns: [table.collection],
+			name: "directus_collections_group_foreign"
+		}),
+]);
+
+export const directusFolders = pgTable("directus_folders", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	parent: uuid(),
+}, (table) => [
+	foreignKey({
+			columns: [table.parent],
+			foreignColumns: [table.id],
+			name: "directus_folders_parent_foreign"
+		}),
+]);
+
+export const directusFiles = pgTable("directus_files", {
+	id: uuid().primaryKey().notNull(),
+	storage: varchar({ length: 255 }).notNull(),
+	filenameDisk: varchar("filename_disk", { length: 255 }),
+	filenameDownload: varchar("filename_download", { length: 255 }).notNull(),
+	title: varchar({ length: 255 }),
+	type: varchar({ length: 255 }),
+	folder: uuid(),
+	uploadedBy: uuid("uploaded_by"),
+	createdOn: timestamp("created_on", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	modifiedBy: uuid("modified_by"),
+	modifiedOn: timestamp("modified_on", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	charset: varchar({ length: 50 }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	filesize: bigint({ mode: "number" }),
+	width: integer(),
+	height: integer(),
+	duration: integer(),
+	embed: varchar({ length: 200 }),
+	description: text(),
+	location: text(),
+	tags: text(),
+	metadata: json(),
+	focalPointX: integer("focal_point_x"),
+	focalPointY: integer("focal_point_y"),
+	tusId: varchar("tus_id", { length: 64 }),
+	tusData: json("tus_data"),
+	uploadedOn: timestamp("uploaded_on", { withTimezone: true, mode: 'string' }),
+}, (table) => [
+	foreignKey({
+			columns: [table.folder],
+			foreignColumns: [directusFolders.id],
+			name: "directus_files_folder_foreign"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.modifiedBy],
+			foreignColumns: [directusUsers.id],
+			name: "directus_files_modified_by_foreign"
+		}),
+	foreignKey({
+			columns: [table.uploadedBy],
+			foreignColumns: [directusUsers.id],
+			name: "directus_files_uploaded_by_foreign"
+		}),
+]);
+
+export const directusRelations = pgTable("directus_relations", {
+	id: serial().primaryKey().notNull(),
+	manyCollection: varchar("many_collection", { length: 64 }).notNull(),
+	manyField: varchar("many_field", { length: 64 }).notNull(),
+	oneCollection: varchar("one_collection", { length: 64 }),
+	oneField: varchar("one_field", { length: 64 }),
+	oneCollectionField: varchar("one_collection_field", { length: 64 }),
+	oneAllowedCollections: text("one_allowed_collections"),
+	junctionField: varchar("junction_field", { length: 64 }),
+	sortField: varchar("sort_field", { length: 64 }),
+	oneDeselectAction: varchar("one_deselect_action", { length: 255 }).default('nullify').notNull(),
+});
+
+export const directusSessions = pgTable("directus_sessions", {
+	token: varchar({ length: 64 }).primaryKey().notNull(),
+	user: uuid(),
+	expires: timestamp({ withTimezone: true, mode: 'string' }).notNull(),
+	ip: varchar({ length: 255 }),
+	userAgent: text("user_agent"),
+	share: uuid(),
+	origin: varchar({ length: 255 }),
+	nextToken: varchar("next_token", { length: 64 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.share],
+			foreignColumns: [directusShares.id],
+			name: "directus_sessions_share_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.user],
+			foreignColumns: [directusUsers.id],
+			name: "directus_sessions_user_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const directusRevisions = pgTable("directus_revisions", {
+	id: serial().primaryKey().notNull(),
+	activity: integer().notNull(),
+	collection: varchar({ length: 64 }).notNull(),
+	item: varchar({ length: 255 }).notNull(),
+	data: json(),
+	delta: json(),
+	parent: integer(),
+	version: uuid(),
+}, (table) => [
+	index().using("btree", table.activity.asc().nullsLast().op("int4_ops")),
+	index().using("btree", table.parent.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.activity],
+			foreignColumns: [directusActivity.id],
+			name: "directus_revisions_activity_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.parent],
+			foreignColumns: [table.id],
+			name: "directus_revisions_parent_foreign"
+		}),
+	foreignKey({
+			columns: [table.version],
+			foreignColumns: [directusVersions.id],
+			name: "directus_revisions_version_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const directusMigrations = pgTable("directus_migrations", {
+	version: varchar({ length: 255 }).primaryKey().notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	timestamp: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const directusPanels = pgTable("directus_panels", {
+	id: uuid().primaryKey().notNull(),
+	dashboard: uuid().notNull(),
+	name: varchar({ length: 255 }),
+	icon: varchar({ length: 64 }).default(sql`NULL`),
+	color: varchar({ length: 10 }),
+	showHeader: boolean("show_header").default(false).notNull(),
+	note: text(),
+	type: varchar({ length: 255 }).notNull(),
+	positionX: integer("position_x").notNull(),
+	positionY: integer("position_y").notNull(),
+	width: integer().notNull(),
+	height: integer().notNull(),
+	options: json(),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+}, (table) => [
+	foreignKey({
+			columns: [table.dashboard],
+			foreignColumns: [directusDashboards.id],
+			name: "directus_panels_dashboard_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_panels_user_created_foreign"
+		}).onDelete("set null"),
+]);
+
+export const directusNotifications = pgTable("directus_notifications", {
+	id: serial().primaryKey().notNull(),
+	timestamp: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	status: varchar({ length: 255 }).default('inbox'),
+	recipient: uuid().notNull(),
+	sender: uuid(),
+	subject: varchar({ length: 255 }).notNull(),
+	message: text(),
+	collection: varchar({ length: 64 }),
+	item: varchar({ length: 255 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.recipient],
+			foreignColumns: [directusUsers.id],
+			name: "directus_notifications_recipient_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.sender],
+			foreignColumns: [directusUsers.id],
+			name: "directus_notifications_sender_foreign"
+		}),
+]);
+
+export const directusShares = pgTable("directus_shares", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 255 }),
+	collection: varchar({ length: 64 }).notNull(),
+	item: varchar({ length: 255 }).notNull(),
+	role: uuid(),
+	password: varchar({ length: 255 }),
+	userCreated: uuid("user_created"),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dateStart: timestamp("date_start", { withTimezone: true, mode: 'string' }),
+	dateEnd: timestamp("date_end", { withTimezone: true, mode: 'string' }),
+	timesUsed: integer("times_used").default(0),
+	maxUses: integer("max_uses"),
+}, (table) => [
+	foreignKey({
+			columns: [table.collection],
+			foreignColumns: [directusCollections.collection],
+			name: "directus_shares_collection_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.role],
+			foreignColumns: [directusRoles.id],
+			name: "directus_shares_role_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_shares_user_created_foreign"
+		}).onDelete("set null"),
+]);
+
+export const directusPresets = pgTable("directus_presets", {
+	id: serial().primaryKey().notNull(),
+	bookmark: varchar({ length: 255 }),
+	user: uuid(),
+	role: uuid(),
+	collection: varchar({ length: 64 }),
+	search: varchar({ length: 100 }),
+	layout: varchar({ length: 100 }).default('tabular'),
+	layoutQuery: json("layout_query"),
+	layoutOptions: json("layout_options"),
+	refreshInterval: integer("refresh_interval"),
+	filter: json(),
+	icon: varchar({ length: 64 }).default('bookmark'),
+	color: varchar({ length: 255 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.role],
+			foreignColumns: [directusRoles.id],
+			name: "directus_presets_role_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.user],
+			foreignColumns: [directusUsers.id],
+			name: "directus_presets_user_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const publiclocationsaffaf6F2Dfe22E8Bde5Cf276F602A62F = pgTable("publiclocationsaffaf6f2dfe22e8bde5cf276f602a62f", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	zip: varchar(),
+	city: varchar(),
+	name: varchar(),
+	phone: varchar(),
+	active: boolean(),
+	legacy: boolean(),
+	country: varchar(),
+	address1: varchar(),
+	address2: varchar(),
+	province: varchar(),
+	shopUrl: varchar("shop_url"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	countryCode: varchar("country_code"),
+	countryName: varchar("country_name"),
+	provinceCode: varchar("province_code"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	localizedCountryName: varchar("localized_country_name"),
+	localizedProvinceName: varchar("localized_province_name"),
+}, (table) => [
+	index("idx_extracted_at_publiclocationsaffaf6f2dfe22e8bde5cf276f602a62").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_publiclocationsaffaf6f2dfe22e8bde5cf276f602a62f").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const directusFlows = pgTable("directus_flows", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	icon: varchar({ length: 64 }),
+	color: varchar({ length: 255 }),
+	description: text(),
+	status: varchar({ length: 255 }).default('active').notNull(),
+	trigger: varchar({ length: 255 }),
+	accountability: varchar({ length: 255 }).default('all'),
+	options: json(),
+	operation: uuid(),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+}, (table) => [
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_flows_user_created_foreign"
+		}).onDelete("set null"),
+	unique("directus_flows_operation_unique").on(table.operation),
+]);
+
+export const directusExtensions = pgTable("directus_extensions", {
+	enabled: boolean().default(true).notNull(),
+	id: uuid().primaryKey().notNull(),
+	folder: varchar({ length: 255 }).notNull(),
+	source: varchar({ length: 255 }).notNull(),
+	bundle: uuid(),
+});
+
+export const directusOperations = pgTable("directus_operations", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 255 }),
+	key: varchar({ length: 255 }).notNull(),
+	type: varchar({ length: 255 }).notNull(),
+	positionX: integer("position_x").notNull(),
+	positionY: integer("position_y").notNull(),
+	options: json(),
+	resolve: uuid(),
+	reject: uuid(),
+	flow: uuid().notNull(),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+}, (table) => [
+	foreignKey({
+			columns: [table.flow],
+			foreignColumns: [directusFlows.id],
+			name: "directus_operations_flow_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.reject],
+			foreignColumns: [table.id],
+			name: "directus_operations_reject_foreign"
+		}),
+	foreignKey({
+			columns: [table.resolve],
+			foreignColumns: [table.id],
+			name: "directus_operations_resolve_foreign"
+		}),
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_operations_user_created_foreign"
+		}).onDelete("set null"),
+	unique("directus_operations_resolve_unique").on(table.resolve),
+	unique("directus_operations_reject_unique").on(table.reject),
+]);
+
+export const directusDashboards = pgTable("directus_dashboards", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	icon: varchar({ length: 64 }).default('dashboard').notNull(),
+	note: text(),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+	color: varchar({ length: 255 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_dashboards_user_created_foreign"
+		}).onDelete("set null"),
+]);
+
+export const directusTranslations = pgTable("directus_translations", {
+	id: uuid().primaryKey().notNull(),
+	language: varchar({ length: 255 }).notNull(),
+	key: varchar({ length: 255 }).notNull(),
+	value: text().notNull(),
+});
+
+export const directusUsers = pgTable("directus_users", {
+	id: uuid().primaryKey().notNull(),
+	firstName: varchar("first_name", { length: 50 }),
+	lastName: varchar("last_name", { length: 50 }),
+	email: varchar({ length: 128 }),
+	password: varchar({ length: 255 }),
+	location: varchar({ length: 255 }),
+	title: varchar({ length: 50 }),
+	description: text(),
+	tags: json(),
+	avatar: uuid(),
+	language: varchar({ length: 255 }).default(sql`NULL`),
+	tfaSecret: varchar("tfa_secret", { length: 255 }),
+	status: varchar({ length: 16 }).default('active').notNull(),
+	role: uuid(),
+	token: varchar({ length: 255 }),
+	lastAccess: timestamp("last_access", { withTimezone: true, mode: 'string' }),
+	lastPage: varchar("last_page", { length: 255 }),
+	provider: varchar({ length: 128 }).default('default').notNull(),
+	externalIdentifier: varchar("external_identifier", { length: 255 }),
+	authData: json("auth_data"),
+	emailNotifications: boolean("email_notifications").default(true),
+	appearance: varchar({ length: 255 }),
+	themeDark: varchar("theme_dark", { length: 255 }),
+	themeLight: varchar("theme_light", { length: 255 }),
+	themeLightOverrides: json("theme_light_overrides"),
+	themeDarkOverrides: json("theme_dark_overrides"),
+	textDirection: varchar("text_direction", { length: 255 }).default('auto').notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.role],
+			foreignColumns: [directusRoles.id],
+			name: "directus_users_role_foreign"
+		}).onDelete("set null"),
+	unique("directus_users_external_identifier_unique").on(table.externalIdentifier),
+	unique("directus_users_email_unique").on(table.email),
+	unique("directus_users_token_unique").on(table.token),
+]);
+
+export const directusAccess = pgTable("directus_access", {
+	id: uuid().primaryKey().notNull(),
+	role: uuid(),
+	user: uuid(),
+	policy: uuid().notNull(),
+	sort: integer(),
+}, (table) => [
+	foreignKey({
+			columns: [table.policy],
+			foreignColumns: [directusPolicies.id],
+			name: "directus_access_policy_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.role],
+			foreignColumns: [directusRoles.id],
+			name: "directus_access_role_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.user],
+			foreignColumns: [directusUsers.id],
+			name: "directus_access_user_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const directusPolicies = pgTable("directus_policies", {
+	id: uuid().primaryKey().notNull(),
+	name: varchar({ length: 100 }).notNull(),
+	icon: varchar({ length: 64 }).default('badge').notNull(),
+	description: text(),
+	ipAccess: text("ip_access"),
+	enforceTfa: boolean("enforce_tfa").default(false).notNull(),
+	adminAccess: boolean("admin_access").default(false).notNull(),
+	appAccess: boolean("app_access").default(false).notNull(),
+});
+
+export const directusComments = pgTable("directus_comments", {
+	id: uuid().primaryKey().notNull(),
+	collection: varchar({ length: 64 }).notNull(),
+	item: varchar({ length: 255 }).notNull(),
+	comment: text().notNull(),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dateUpdated: timestamp("date_updated", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+	userUpdated: uuid("user_updated"),
+}, (table) => [
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_comments_user_created_foreign"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.userUpdated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_comments_user_updated_foreign"
+		}),
+]);
+
+export const directusVersions = pgTable("directus_versions", {
+	id: uuid().primaryKey().notNull(),
+	key: varchar({ length: 64 }).notNull(),
+	name: varchar({ length: 255 }),
+	collection: varchar({ length: 64 }).notNull(),
+	item: varchar({ length: 255 }).notNull(),
+	hash: varchar({ length: 255 }),
+	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dateUpdated: timestamp("date_updated", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	userCreated: uuid("user_created"),
+	userUpdated: uuid("user_updated"),
+	delta: json(),
+}, (table) => [
+	foreignKey({
+			columns: [table.collection],
+			foreignColumns: [directusCollections.collection],
+			name: "directus_versions_collection_foreign"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.userCreated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_versions_user_created_foreign"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.userUpdated],
+			foreignColumns: [directusUsers.id],
+			name: "directus_versions_user_updated_foreign"
+		}),
+]);
+
+export const directusSettings = pgTable("directus_settings", {
+	id: serial().primaryKey().notNull(),
+	projectName: varchar("project_name", { length: 100 }).default('Directus').notNull(),
+	projectUrl: varchar("project_url", { length: 255 }),
+	projectColor: varchar("project_color", { length: 255 }).default('#6644FF').notNull(),
+	projectLogo: uuid("project_logo"),
+	publicForeground: uuid("public_foreground"),
+	publicBackground: uuid("public_background"),
+	publicNote: text("public_note"),
+	authLoginAttempts: integer("auth_login_attempts").default(25),
+	authPasswordPolicy: varchar("auth_password_policy", { length: 100 }),
+	storageAssetTransform: varchar("storage_asset_transform", { length: 7 }).default('all'),
+	storageAssetPresets: json("storage_asset_presets"),
+	customCss: text("custom_css"),
+	storageDefaultFolder: uuid("storage_default_folder"),
+	basemaps: json(),
+	mapboxKey: varchar("mapbox_key", { length: 255 }),
+	moduleBar: json("module_bar"),
+	projectDescriptor: varchar("project_descriptor", { length: 100 }),
+	defaultLanguage: varchar("default_language", { length: 255 }).default('en-US').notNull(),
+	customAspectRatios: json("custom_aspect_ratios"),
+	publicFavicon: uuid("public_favicon"),
+	defaultAppearance: varchar("default_appearance", { length: 255 }).default('auto').notNull(),
+	defaultThemeLight: varchar("default_theme_light", { length: 255 }),
+	themeLightOverrides: json("theme_light_overrides"),
+	defaultThemeDark: varchar("default_theme_dark", { length: 255 }),
+	themeDarkOverrides: json("theme_dark_overrides"),
+	reportErrorUrl: varchar("report_error_url", { length: 255 }),
+	reportBugUrl: varchar("report_bug_url", { length: 255 }),
+	reportFeatureUrl: varchar("report_feature_url", { length: 255 }),
+	publicRegistration: boolean("public_registration").default(false).notNull(),
+	publicRegistrationVerifyEmail: boolean("public_registration_verify_email").default(true).notNull(),
+	publicRegistrationRole: uuid("public_registration_role"),
+	publicRegistrationEmailFilter: json("public_registration_email_filter"),
+	visualEditorUrls: json("visual_editor_urls"),
+	projectId: uuid("project_id"),
+	mcpEnabled: boolean("mcp_enabled").default(false).notNull(),
+	mcpAllowDeletes: boolean("mcp_allow_deletes").default(false).notNull(),
+	mcpPromptsCollection: varchar("mcp_prompts_collection", { length: 255 }).default(sql`NULL`),
+	mcpSystemPromptEnabled: boolean("mcp_system_prompt_enabled").default(true).notNull(),
+	mcpSystemPrompt: text("mcp_system_prompt"),
+	projectOwner: varchar("project_owner", { length: 255 }),
+	projectUsage: varchar("project_usage", { length: 255 }),
+	orgName: varchar("org_name", { length: 255 }),
+	productUpdates: boolean("product_updates"),
+	projectStatus: varchar("project_status", { length: 255 }),
+	aiOpenaiApiKey: text("ai_openai_api_key"),
+	aiAnthropicApiKey: text("ai_anthropic_api_key"),
+	aiSystemPrompt: text("ai_system_prompt"),
+}, (table) => [
+	foreignKey({
+			columns: [table.projectLogo],
+			foreignColumns: [directusFiles.id],
+			name: "directus_settings_project_logo_foreign"
+		}),
+	foreignKey({
+			columns: [table.publicBackground],
+			foreignColumns: [directusFiles.id],
+			name: "directus_settings_public_background_foreign"
+		}),
+	foreignKey({
+			columns: [table.publicFavicon],
+			foreignColumns: [directusFiles.id],
+			name: "directus_settings_public_favicon_foreign"
+		}),
+	foreignKey({
+			columns: [table.publicForeground],
+			foreignColumns: [directusFiles.id],
+			name: "directus_settings_public_foreground_foreign"
+		}),
+	foreignKey({
+			columns: [table.publicRegistrationRole],
+			foreignColumns: [directusRoles.id],
+			name: "directus_settings_public_registration_role_foreign"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.storageDefaultFolder],
+			foreignColumns: [directusFolders.id],
+			name: "directus_settings_storage_default_folder_foreign"
+		}).onDelete("set null"),
+]);
 
 export const collections = pgTable("collections", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
@@ -330,7 +996,7 @@ export const customers = pgTable("customers", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
+	id: bigint({ mode: "number" }).notNull().primaryKey(),
 	note: varchar(),
 	tags: varchar(),
 	email: varchar(),
@@ -469,38 +1135,6 @@ export const inventoryItems = pgTable("inventory_items", {
 	index("idx_cursor_inventory_items").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
 	index("idx_extracted_at_inventory_items").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
 	index("idx_pk_inventory_items").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const locations = pgTable("locations", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	zip: varchar(),
-	city: varchar(),
-	name: varchar(),
-	phone: varchar(),
-	active: boolean(),
-	legacy: boolean(),
-	country: varchar(),
-	address1: varchar(),
-	address2: varchar(),
-	province: varchar(),
-	shopUrl: varchar("shop_url"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	countryCode: varchar("country_code"),
-	countryName: varchar("country_name"),
-	provinceCode: varchar("province_code"),
-	adminGraphqlApiId: varchar("admin_graphql_api_id"),
-	localizedCountryName: varchar("localized_country_name"),
-	localizedProvinceName: varchar("localized_province_name"),
-}, (table) => [
-	index("idx_extracted_at_locations").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_locations").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
 export const metafieldCustomers = pgTable("metafield_customers", {
@@ -747,6 +1381,78 @@ export const priceRules = pgTable("price_rules", {
 	index("idx_pk_price_rules").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
+export const publicshop85Cc404C69B63Caae31D3130Bd452224 = pgTable("publicshop85cc404c69b63caae31d3130bd452224", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	zip: varchar(),
+	city: varchar(),
+	name: varchar(),
+	email: varchar(),
+	phone: varchar(),
+	domain: varchar(),
+	source: varchar(),
+	country: varchar(),
+	address1: varchar(),
+	address2: varchar(),
+	currency: varchar(),
+	finances: boolean(),
+	latitude: numeric(),
+	province: varchar(),
+	shopUrl: varchar("shop_url"),
+	timezone: varchar(),
+	forceSsl: boolean("force_ssl"),
+	longitude: numeric(),
+	planName: varchar("plan_name"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	shopOwner: varchar("shop_owner"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	weightUnit: varchar("weight_unit"),
+	countryCode: varchar("country_code"),
+	countryName: varchar("country_name"),
+	countyTaxes: boolean("county_taxes"),
+	moneyFormat: varchar("money_format"),
+	taxShipping: boolean("tax_shipping"),
+	hasDiscounts: boolean("has_discounts"),
+	ianaTimezone: varchar("iana_timezone"),
+	provinceCode: varchar("province_code"),
+	customerEmail: varchar("customer_email"),
+	hasGiftCards: boolean("has_gift_cards"),
+	hasStorefront: boolean("has_storefront"),
+	primaryLocale: varchar("primary_locale"),
+	setupRequired: boolean("setup_required"),
+	taxesIncluded: boolean("taxes_included"),
+	myshopifyDomain: varchar("myshopify_domain"),
+	passwordEnabled: boolean("password_enabled"),
+	planDisplayName: varchar("plan_display_name"),
+	googleAppsDomain: varchar("google_apps_domain"),
+	preLaunchEnabled: boolean("pre_launch_enabled"),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	primaryLocationId: bigint("primary_location_id", { mode: "number" }),
+	cookieConsentLevel: varchar("cookie_consent_level"),
+	eligibleForPayments: boolean("eligible_for_payments"),
+	checkoutApiSupported: boolean("checkout_api_supported"),
+	moneyInEmailsFormat: varchar("money_in_emails_format"),
+	multiLocationEnabled: boolean("multi_location_enabled"),
+	googleAppsLoginEnabled: boolean("google_apps_login_enabled"),
+	moneyWithCurrencyFormat: varchar("money_with_currency_format"),
+	transactionalSmsDisabled: boolean("transactional_sms_disabled"),
+	autoConfigureTaxInclusivity: varchar("auto_configure_tax_inclusivity"),
+	enabledPresentmentCurrencies: jsonb("enabled_presentment_currencies"),
+	eligibleForCardReaderGiveaway: boolean("eligible_for_card_reader_giveaway"),
+	requiresExtraPaymentsAgreement: boolean("requires_extra_payments_agreement"),
+	visitorTrackingConsentPreference: varchar("visitor_tracking_consent_preference"),
+	moneyWithCurrencyInEmailsFormat: varchar("money_with_currency_in_emails_format"),
+	marketingSmsConsentEnabledAtCheckout: boolean("marketing_sms_consent_enabled_at_checkout"),
+}, (table) => [
+	index("idx_extracted_at_publicshop85cc404c69b63caae31d3130bd452224").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_publicshop85cc404c69b63caae31d3130bd452224").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
 export const metafieldOrders = pgTable("metafield_orders", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
@@ -854,7 +1560,7 @@ export const orders = pgTable("orders", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
+	id: bigint({ mode: "number" }).notNull().primaryKey(),
 	name: varchar(),
 	note: varchar(),
 	tags: varchar(),
@@ -1145,6 +1851,87 @@ export const deletedProducts = pgTable("deleted_products", {
 	index("idx_pk_deleted_products").using("btree", table.id.asc().nullsLast().op("int8_ops")),
 ]);
 
+export const customerAddress = pgTable("customer_address", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	zip: varchar(),
+	city: varchar(),
+	name: varchar(),
+	phone: varchar(),
+	company: varchar(),
+	country: varchar(),
+	default: boolean(),
+	address1: varchar(),
+	address2: varchar(),
+	province: varchar(),
+	shopUrl: varchar("shop_url"),
+	lastName: varchar("last_name"),
+	firstName: varchar("first_name"),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	customerId: bigint("customer_id", { mode: "number" }),
+	countryCode: varchar("country_code"),
+	countryName: varchar("country_name"),
+	provinceCode: varchar("province_code"),
+}, (table) => [
+	index("idx_cursor_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+	index("idx_extracted_at_customer_address").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const publiccountries64E94Aa50F6Fc04A564220Feff12B754 = pgTable("publiccountries64e94aa50f6fc04a564220feff12b754", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	code: varchar(),
+	name: varchar(),
+	shopUrl: varchar("shop_url"),
+	provinces: jsonb(),
+	restOfWorld: boolean("rest_of_world"),
+	translatedName: varchar("translated_name"),
+}, (table) => [
+	index("idx_extracted_at_publiccountries64e94aa50f6fc04a564220feff12b75").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
+	index("idx_pk_publiccountries64e94aa50f6fc04a564220feff12b754").using("btree", table.id.asc().nullsLast().op("int8_ops")),
+]);
+
+export const locations = pgTable("locations", {
+	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
+	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
+	airbyteMeta: jsonb("_airbyte_meta").notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }),
+	zip: varchar(),
+	city: varchar(),
+	name: varchar(),
+	phone: varchar(),
+	active: boolean(),
+	legacy: boolean(),
+	country: varchar(),
+	address1: varchar(),
+	address2: varchar(),
+	province: varchar(),
+	shopUrl: varchar("shop_url"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	countryCode: varchar("country_code"),
+	countryName: varchar("country_name"),
+	provinceCode: varchar("province_code"),
+	adminGraphqlApiId: varchar("admin_graphql_api_id"),
+	localizedCountryName: varchar("localized_country_name"),
+	localizedProvinceName: varchar("localized_province_name"),
+});
+
 export const shop = pgTable("shop", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
 	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
@@ -1212,43 +1999,7 @@ export const shop = pgTable("shop", {
 	visitorTrackingConsentPreference: varchar("visitor_tracking_consent_preference"),
 	moneyWithCurrencyInEmailsFormat: varchar("money_with_currency_in_emails_format"),
 	marketingSmsConsentEnabledAtCheckout: boolean("marketing_sms_consent_enabled_at_checkout"),
-}, (table) => [
-	index("idx_extracted_at_shop").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_shop").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
-
-export const customerAddress = pgTable("customer_address", {
-	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
-	airbyteExtractedAt: timestamp("_airbyte_extracted_at", { withTimezone: true, mode: 'string' }).notNull(),
-	airbyteMeta: jsonb("_airbyte_meta").notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	airbyteGenerationId: bigint("_airbyte_generation_id", { mode: "number" }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }),
-	zip: varchar(),
-	city: varchar(),
-	name: varchar(),
-	phone: varchar(),
-	company: varchar(),
-	country: varchar(),
-	default: boolean(),
-	address1: varchar(),
-	address2: varchar(),
-	province: varchar(),
-	shopUrl: varchar("shop_url"),
-	lastName: varchar("last_name"),
-	firstName: varchar("first_name"),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	customerId: bigint("customer_id", { mode: "number" }),
-	countryCode: varchar("country_code"),
-	countryName: varchar("country_name"),
-	provinceCode: varchar("province_code"),
-}, (table) => [
-	index("idx_cursor_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-	index("idx_extracted_at_customer_address").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_customer_address").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
+});
 
 export const countries = pgTable("countries", {
 	airbyteRawId: varchar("_airbyte_raw_id").notNull(),
@@ -1264,7 +2015,4 @@ export const countries = pgTable("countries", {
 	provinces: jsonb(),
 	restOfWorld: boolean("rest_of_world"),
 	translatedName: varchar("translated_name"),
-}, (table) => [
-	index("idx_extracted_at_countries").using("btree", table.airbyteExtractedAt.asc().nullsLast().op("timestamptz_ops")),
-	index("idx_pk_countries").using("btree", table.id.asc().nullsLast().op("int8_ops")),
-]);
+});

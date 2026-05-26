@@ -41,6 +41,12 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	const result = await shopify.query({
 		data: `
 			query {
+				customer(id: "${safeCustomerId}") {
+					amountSpent {
+						amount
+						currencyCode
+					}
+				}
 				customerSegmentMembership(
 					customerId: "${safeCustomerId}",
 					segmentIds: [${safeSegmentIds}]
@@ -58,10 +64,18 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 		return json({ error: result.errors }, { status: 502 });
 	}
 
+	const customer = result.data?.customer;
+	if (!customer) {
+		return json({ error: 'customer not found' }, { status: 404 });
+	}
+
 	const memberships: Record<string, boolean> = {};
 	for (const membership of result.data?.customerSegmentMembership?.memberships ?? []) {
 		memberships[membership.segmentId] = membership.isMember;
 	}
 
-	return json({ memberships });
+	return json({
+		memberships,
+		amountSpent: customer.amountSpent
+	});
 };
